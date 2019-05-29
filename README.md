@@ -88,6 +88,10 @@ cargo run --bin invoice -- remove <INVOICE NUMBER>
 
 Listing the invoices again should reveal that the invoice has been removed.
 
+### Error Handling
+
+This is a learning project so no proper error handling on logging is done.
+
 
 ### Tests
 
