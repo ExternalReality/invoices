@@ -31,6 +31,8 @@ This program consists of two services:
 * The invoice server
 * The invoice analysis server
 
+*(a third service, the 'rating server' was being developed on branch 'rating_service' and if needed will be finished.)*
+
 The invoice server stores the invoices
 The invoice analysis server validates the invoices
 
