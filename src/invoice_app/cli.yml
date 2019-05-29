@@ -1,0 +1,27 @@
+name: invoice
+version: "0.1.0"
+author: Eric Claude Jones <ecjones@protonmail.com>
+about: Invoice service driver 
+subcommands:
+    - remove:
+        about: remove a stored invoice
+        version: "0.1"
+        args:
+          - invoice:
+              value_name: INVOICE NUMBER
+              required: true
+              help: Invoice identifier
+    - list:
+        about: List stored invoice numbers
+        version: "0.1"
+        long: list
+    - submit:
+        about: Submit an invoice
+        version: "0.1"
+        args:
+            - input:
+                short: i
+                long: input
+                value_name: YAML FILE
+                required: true
+                help: Yaml invoice to submit

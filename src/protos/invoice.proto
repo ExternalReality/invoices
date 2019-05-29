@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+service Invoices {
+  rpc Create(CreateInvoiceRequest) returns (CreateInvoiceReply) {}
+  rpc List(ListInvoiceRequest) returns (ListInvoiceReply) {}
+  rpc Remove(RemoveInvoiceRequest) returns (RemoveInvoiceReply) {}
+}
+
+message Address {
+  string city = 1;
+  string street = 2;
+  string zip = 3;
+}
+
+message Invoice {
+  Address bill_to = 2;
+  string company_name = 3;
+  Address addres = 4;
+  string phone = 5;
+  string email = 6;
+}
+
+message CreateInvoiceRequest { Invoice invoice = 1; }
+
+message CreateInvoiceReply { string invoice_number = 1; }
+
+message ListInvoiceRequest {}
+
+message ListInvoiceReply { repeated string invoice_numbers = 1; }
+
+message RemoveInvoiceRequest { string invoice_number = 1; }
+
+message RemoveInvoiceReply { string invoice_number = 1; }
+
+service Analysis {
+  rpc DetectDuplicate(DetectDuplicateRequest) returns (DetectDuplicateReply) {}
+}
+
+message DetectDuplicateRequest { Invoice invoice = 1; }
+
+message DetectDuplicateReply {
+  enum Result {
+    OK = 0;
+    DUPLICATE = 1;
+  }
+  Result result = 1;
+}
