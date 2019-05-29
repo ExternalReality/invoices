@@ -2,7 +2,7 @@ use futures::Future;
 
 use crate::db::DetectDuplicateStore;
 use crate::invoice::{DetectDuplicateReply, DetectDuplicateRequest};
-use crate::Analysis;
+use crate::invoice_grpc::Analysis;
 use crate::{RpcContext, UnarySink};
 
 #[derive(Clone)]

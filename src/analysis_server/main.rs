@@ -11,7 +11,6 @@ mod db;
 
 #[path = "../protos/invoice_grpc.rs"]
 mod invoice_grpc;
-use invoice_grpc::Analysis;
 
 #[path = "../protos/invoice.rs"]
 mod invoice;

@@ -47,7 +47,7 @@ impl DetectDuplicateStore {
         }
     }
 
-    pub fn prune_expired(&mut self) {
+    fn prune_expired(&mut self) {
         let ttl = self.ttl;
         let mut store = self.db.lock().unwrap();
         for (_, v) in store.iter_mut() {
