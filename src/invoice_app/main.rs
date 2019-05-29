@@ -5,9 +5,8 @@ use std::sync::Arc;
 extern crate clap;
 use clap::App;
 
-use toml;
-
 use grpcio::{ChannelBuilder, EnvBuilder};
+use toml;
 
 #[path = "../protos/invoice_grpc.rs"]
 mod invoice_grpc;

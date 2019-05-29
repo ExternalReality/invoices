@@ -7,35 +7,17 @@ use futures::sync::oneshot;
 use futures::Future;
 use grpcio::{Environment, RpcContext, ServerBuilder, UnarySink};
 
+mod db;
+
 #[path = "../protos/invoice_grpc.rs"]
 mod invoice_grpc;
 use invoice_grpc::Analysis;
 
 #[path = "../protos/invoice.rs"]
 mod invoice;
-use invoice::{DetectDuplicateReply, DetectDuplicateRequest};
 
-#[derive(Clone)]
-struct AnalysisService(db::DetectDuplicateStore);
-
-mod db;
-
-impl Analysis for AnalysisService {
-    fn detect_duplicate(
-        &mut self,
-        ctx: RpcContext<'_>,
-        req: DetectDuplicateRequest,
-        sink: UnarySink<DetectDuplicateReply>,
-    ) {
-        let dup_res = self.0.detect_duplicate(req.get_invoice());
-        let mut resp = DetectDuplicateReply::new();
-        resp.set_result(dup_res);
-        let f = sink
-            .success(resp)
-            .map_err(move |e| panic!("failed to reply {:?}: {:?}", req, e));
-        ctx.spawn(f)
-    }
-}
+mod service;
+use service::AnalysisService;
 
 fn main() {
     let minutes = Duration::new(15 * 60, 0);

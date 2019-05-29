@@ -1,10 +1,10 @@
 use std::collections::HashMap;
-
 use std::sync::Arc;
 use std::sync::RwLock;
+
 use uuid::Uuid;
 
-use super::invoice::Invoice;
+use crate::invoice::Invoice;
 
 #[derive(Clone)]
 pub struct Database(Arc<RwLock<HashMap<Uuid, Invoice>>>);

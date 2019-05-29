@@ -15,7 +15,6 @@ mime = "0.3"
 clap = {version = "2.33", features = ["yaml"]}
 toml = "0.5"
 serde = { version = "1.0", features = ["derive"] }
-serde_derive = "1.0"
 
 [build-dependencies]
 protoc-grpcio = "1.0.2"

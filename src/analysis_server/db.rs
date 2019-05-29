@@ -1,10 +1,9 @@
 use std::collections::HashMap;
-use std::time::{Duration, Instant};
-
 use std::sync::Arc;
 use std::sync::Mutex;
+use std::time::{Duration, Instant};
 
-use super::invoice::{DetectDuplicateReply_Result, Invoice};
+use crate::invoice::{DetectDuplicateReply_Result, Invoice};
 
 #[derive(Clone)]
 struct TimedInvoice(Invoice, Instant);
