@@ -69,3 +69,24 @@ cargo run --bin invoice -- submit -i examples/invoice.toml
 ```
 
 Since this new submission is similar to the last, you should see a warning message appear indicating that the system thinks the submission is a possible mistake. Don't worry you can try again after 15 minutes and the system will accept you submission.
+
+Check the current ivnoices again:
+
+```
+cargo run --bin invoice -- list
+```
+
+You should see invoice numbers for all your invoices.
+
+Remove an invoice now:
+
+```
+cargo run --bin invoice -- remove <INVOICE NUMBER>
+```
+
+Listing the invoices again should reveal that the invoice has been removed.
+
+
+### Tests
+
+You can run the tests with `cargo test`
