@@ -62,7 +62,7 @@ You should see there are no invoices available (and empty list of invoice number
 cargo run --bin invoice -- submit -i examples/invoice.toml
 ```
 
-Currently and invoice is a toml file. You can look at a valid invoice in the `examples` directory. Try to submit the same invoice again.
+Currently the system accepts toml encoded invoice files. You can look at a valid invoice in the `examples` directory. Try to submit the same invoice again.
 
 ```
 cargo run --bin invoice -- submit -i examples/invoice.toml
