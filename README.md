@@ -21,7 +21,7 @@ cd invoices
 3. Get the dependencies
 
 ```
-cargo check
+cargo fetch
 ```
 
 ### About the program
