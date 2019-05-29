@@ -25,3 +25,7 @@ subcommands:
                 value_name: YAML FILE
                 required: true
                 help: Yaml invoice to submit
+            - force:
+                short: f
+                long: force
+                help: Override duplication warning

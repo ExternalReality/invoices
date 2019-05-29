@@ -45,19 +45,21 @@ fn handle_submit(
     let contents = fs::read_to_string(filename).expect("Something went wrong reading the file");
     let inv: invoice::Invoice = toml::from_str(&contents).unwrap();
 
-    let mut req = invoice::DetectDuplicateRequest::new();
-    req.set_invoice(inv.clone());
-    let res = anc.detect_duplicate(&req).unwrap();
-    match res.result {
-        DetectDuplicateReply_Result::OK => {}
-        DetectDuplicateReply_Result::DUPLICATE => {
-            let warning = "
+    if !sc.is_present("force") {
+        let mut req = invoice::DetectDuplicateRequest::new();
+        req.set_invoice(inv.clone());
+        let res = anc.detect_duplicate(&req).unwrap();
+        match res.result {
+            DetectDuplicateReply_Result::OK => {}
+            DetectDuplicateReply_Result::DUPLICATE => {
+                let warning = "
 WARNING: The submitted invoice is very similar\n\
 to a recent submission and may be a duplicate.\n\
 Use the '--force' option to submit anyway.\n";
 
-            println!("{}", warning);
-            return;
+                println!("{}", warning);
+                return;
+            }
         }
     }
 
