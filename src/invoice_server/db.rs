@@ -6,30 +6,59 @@ use uuid::Uuid;
 
 use crate::invoice::Invoice;
 
+pub struct InvoiceStore(
+    HashMap<Uuid, Arc<Invoice>>,
+    HashMap<String, HashMap<Uuid, Arc<Invoice>>>,
+);
+
+type SharedDb = Arc<RwLock<InvoiceStore>>;
+
 #[derive(Clone)]
-pub struct Database(Arc<RwLock<HashMap<Uuid, Invoice>>>);
+pub struct Database(SharedDb);
 
 impl Database {
     pub fn new() -> Database {
-        Database(Arc::new(RwLock::new(HashMap::new())))
+        Database(Arc::new(RwLock::new(InvoiceStore(
+            HashMap::new(),
+            HashMap::new(),
+        ))))
     }
 
     pub fn create(&mut self, invoice: &Invoice) -> String {
         let invoice_number = Uuid::new_v4();
         let mut db = self.0.write().unwrap();
-        db.insert(invoice_number, invoice.clone());
+        let item = Arc::new(invoice.clone());
+        db.0.insert(invoice_number.clone(), Arc::clone(&item));
+        db.1.entry(invoice.company_name.clone())
+            .or_insert(HashMap::new())
+            .insert(invoice_number.clone(), Arc::clone(&item));
         invoice_number.to_string()
     }
 
     pub fn list(&mut self) -> Vec<String> {
         let db = self.0.read().unwrap();
-        db.iter().map(|(key, _)| key.to_string()).collect()
+        db.0.iter().map(|(key, _)| key.to_string()).collect()
     }
 
     pub fn remove<'a>(&mut self, invoice_number: &'a str) -> Option<&'a str> {
         let key = Uuid::parse_str(invoice_number).unwrap();
         let mut db = self.0.write().unwrap();
-        db.remove(&key).map(|_| invoice_number)
+        let inv = db.0.remove(&key)?;
+        db.1.get_mut(&inv.company_name)
+            .map(|v| v.get_mut(&key))
+            .map(|_| invoice_number)
+    }
+
+    #[allow(dead_code)]
+    pub fn read_by_company(&mut self, company_name: &str) -> Vec<Invoice> {
+        let db = self.0.read().unwrap();
+        match db.1.get(company_name) {
+            Some(v) => v
+                .iter()
+                .map(|(_, v)| Arc::make_mut(&mut v.clone()).clone())
+                .collect(),
+            None => Vec::new(),
+        }
     }
 
     #[allow(dead_code)]
@@ -38,7 +67,10 @@ impl Database {
         match result {
             Ok(key) => {
                 let db = self.0.read().unwrap();
-                db.get(&key).map(|t| t.clone())
+                match db.0.get(&key) {
+                    Some(m) => Some(Arc::make_mut(&mut Arc::clone(m)).clone()),
+                    None => None,
+                }
             }
             Err(_) => None,
         }
@@ -51,7 +83,7 @@ mod tests {
     use super::Database;
 
     #[test]
-    fn test_create() {
+    fn create() {
         let mut db = Database::new();
         let inv1 = invoice::Invoice::new();
         let num = db.create(&inv1);
@@ -59,7 +91,7 @@ mod tests {
     }
 
     #[test]
-    fn test_list() {
+    fn list() {
         let mut db = Database::new();
         let inv1 = invoice::Invoice::new();
         let num = db.create(&inv1);
@@ -68,7 +100,7 @@ mod tests {
     }
 
     #[test]
-    fn test_remove() {
+    fn remove() {
         let mut db = Database::new();
         let inv1 = invoice::Invoice::new();
         let num = db.create(&inv1);
@@ -77,14 +109,30 @@ mod tests {
     }
 
     #[test]
-    fn test_read_missing() {
+    fn read_missing() {
         let db = Database::new();
         assert_eq!(db.read("42fa5eee-9f07-487a-91f0-cedd9f08e507"), None);
     }
 
     #[test]
-    fn test_read_bizarre_index() {
+    fn read_bizarre_index() {
         let db = Database::new();
         assert_eq!(db.read("hello, world"), None);
+    }
+
+    #[test]
+    fn read_company() {
+        let mut db = Database::new();
+        let mut inv1 = invoice::Invoice::new();
+        let key = "Company";
+        inv1.set_company_name(String::from(key));
+        db.create(&inv1);
+        assert_eq!(db.read_by_company(key), vec![inv1]);
+    }
+
+    #[test]
+    fn read_missing_company() {
+        let mut db = Database::new();
+        assert_eq!(db.read_by_company("Not There"), vec![]);
     }
 }
