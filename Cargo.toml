@@ -36,6 +36,10 @@ path = "src/invoice_app/main.rs"
 name = "analysis_server"
 path = "src/analysis_server/main.rs"
 
+[[bin]]
+name = "rating_server"
+path = "src/rating_server/main.rs"
+
 [features]
 default = ["with-serde"]
 with-serde = ["protobuf/with-serde"]

@@ -283,11 +283,13 @@ impl ::protobuf::reflect::ProtobufValue for Address {
 #[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 pub struct Invoice {
     // message fields
+    pub timestamp: ::std::string::String,
     pub bill_to: ::protobuf::SingularPtrField<Address>,
     pub company_name: ::std::string::String,
     pub addres: ::protobuf::SingularPtrField<Address>,
     pub phone: ::std::string::String,
     pub email: ::std::string::String,
+    pub total_price: f64,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
@@ -304,6 +306,32 @@ impl<'a> ::std::default::Default for &'a Invoice {
 impl Invoice {
     pub fn new() -> Invoice {
         ::std::default::Default::default()
+    }
+
+    // string timestamp = 1;
+
+
+    pub fn get_timestamp(&self) -> &str {
+        &self.timestamp
+    }
+    pub fn clear_timestamp(&mut self) {
+        self.timestamp.clear();
+    }
+
+    // Param is passed by value, moved
+    pub fn set_timestamp(&mut self, v: ::std::string::String) {
+        self.timestamp = v;
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_timestamp(&mut self) -> &mut ::std::string::String {
+        &mut self.timestamp
+    }
+
+    // Take field
+    pub fn take_timestamp(&mut self) -> ::std::string::String {
+        ::std::mem::replace(&mut self.timestamp, ::std::string::String::new())
     }
 
     // .Address bill_to = 2;
@@ -449,6 +477,21 @@ impl Invoice {
     pub fn take_email(&mut self) -> ::std::string::String {
         ::std::mem::replace(&mut self.email, ::std::string::String::new())
     }
+
+    // double total_price = 7;
+
+
+    pub fn get_total_price(&self) -> f64 {
+        self.total_price
+    }
+    pub fn clear_total_price(&mut self) {
+        self.total_price = 0.;
+    }
+
+    // Param is passed by value, moved
+    pub fn set_total_price(&mut self, v: f64) {
+        self.total_price = v;
+    }
 }
 
 impl ::protobuf::Message for Invoice {
@@ -470,6 +513,9 @@ impl ::protobuf::Message for Invoice {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
+                1 => {
+                    ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.timestamp)?;
+                },
                 2 => {
                     ::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.bill_to)?;
                 },
@@ -485,6 +531,13 @@ impl ::protobuf::Message for Invoice {
                 6 => {
                     ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.email)?;
                 },
+                7 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeFixed64 {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    let tmp = is.read_double()?;
+                    self.total_price = tmp;
+                },
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
                 },
@@ -497,6 +550,9 @@ impl ::protobuf::Message for Invoice {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
+        if !self.timestamp.is_empty() {
+            my_size += ::protobuf::rt::string_size(1, &self.timestamp);
+        }
         if let Some(ref v) = self.bill_to.as_ref() {
             let len = v.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
@@ -514,12 +570,18 @@ impl ::protobuf::Message for Invoice {
         if !self.email.is_empty() {
             my_size += ::protobuf::rt::string_size(6, &self.email);
         }
+        if self.total_price != 0. {
+            my_size += 9;
+        }
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
+        if !self.timestamp.is_empty() {
+            os.write_string(1, &self.timestamp)?;
+        }
         if let Some(ref v) = self.bill_to.as_ref() {
             os.write_tag(2, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
@@ -538,6 +600,9 @@ impl ::protobuf::Message for Invoice {
         }
         if !self.email.is_empty() {
             os.write_string(6, &self.email)?;
+        }
+        if self.total_price != 0. {
+            os.write_double(7, self.total_price)?;
         }
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
@@ -581,6 +646,11 @@ impl ::protobuf::Message for Invoice {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
+                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                    "timestamp",
+                    |m: &Invoice| { &m.timestamp },
+                    |m: &mut Invoice| { &mut m.timestamp },
+                ));
                 fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<Address>>(
                     "bill_to",
                     |m: &Invoice| { &m.bill_to },
@@ -606,6 +676,11 @@ impl ::protobuf::Message for Invoice {
                     |m: &Invoice| { &m.email },
                     |m: &mut Invoice| { &mut m.email },
                 ));
+                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeDouble>(
+                    "total_price",
+                    |m: &Invoice| { &m.total_price },
+                    |m: &mut Invoice| { &mut m.total_price },
+                ));
                 ::protobuf::reflect::MessageDescriptor::new::<Invoice>(
                     "Invoice",
                     fields,
@@ -628,11 +703,13 @@ impl ::protobuf::Message for Invoice {
 
 impl ::protobuf::Clear for Invoice {
     fn clear(&mut self) {
+        self.timestamp.clear();
         self.bill_to.clear();
         self.company_name.clear();
         self.addres.clear();
         self.phone.clear();
         self.email.clear();
+        self.total_price = 0.;
         self.unknown_fields.clear();
     }
 }
@@ -1654,6 +1731,357 @@ impl ::protobuf::reflect::ProtobufValue for RemoveInvoiceReply {
 
 #[derive(PartialEq,Clone,Default)]
 #[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
+pub struct ByCompanyRequest {
+    // message fields
+    pub company_name: ::std::string::String,
+    // special fields
+    #[cfg_attr(feature = "with-serde", serde(skip))]
+    pub unknown_fields: ::protobuf::UnknownFields,
+    #[cfg_attr(feature = "with-serde", serde(skip))]
+    pub cached_size: ::protobuf::CachedSize,
+}
+
+impl<'a> ::std::default::Default for &'a ByCompanyRequest {
+    fn default() -> &'a ByCompanyRequest {
+        <ByCompanyRequest as ::protobuf::Message>::default_instance()
+    }
+}
+
+impl ByCompanyRequest {
+    pub fn new() -> ByCompanyRequest {
+        ::std::default::Default::default()
+    }
+
+    // string company_name = 1;
+
+
+    pub fn get_company_name(&self) -> &str {
+        &self.company_name
+    }
+    pub fn clear_company_name(&mut self) {
+        self.company_name.clear();
+    }
+
+    // Param is passed by value, moved
+    pub fn set_company_name(&mut self, v: ::std::string::String) {
+        self.company_name = v;
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_company_name(&mut self) -> &mut ::std::string::String {
+        &mut self.company_name
+    }
+
+    // Take field
+    pub fn take_company_name(&mut self) -> ::std::string::String {
+        ::std::mem::replace(&mut self.company_name, ::std::string::String::new())
+    }
+}
+
+impl ::protobuf::Message for ByCompanyRequest {
+    fn is_initialized(&self) -> bool {
+        true
+    }
+
+    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
+        while !is.eof()? {
+            let (field_number, wire_type) = is.read_tag_unpack()?;
+            match field_number {
+                1 => {
+                    ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.company_name)?;
+                },
+                _ => {
+                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                },
+            };
+        }
+        ::std::result::Result::Ok(())
+    }
+
+    // Compute sizes of nested messages
+    #[allow(unused_variables)]
+    fn compute_size(&self) -> u32 {
+        let mut my_size = 0;
+        if !self.company_name.is_empty() {
+            my_size += ::protobuf::rt::string_size(1, &self.company_name);
+        }
+        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        self.cached_size.set(my_size);
+        my_size
+    }
+
+    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
+        if !self.company_name.is_empty() {
+            os.write_string(1, &self.company_name)?;
+        }
+        os.write_unknown_fields(self.get_unknown_fields())?;
+        ::std::result::Result::Ok(())
+    }
+
+    fn get_cached_size(&self) -> u32 {
+        self.cached_size.get()
+    }
+
+    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
+        &self.unknown_fields
+    }
+
+    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
+        &mut self.unknown_fields
+    }
+
+    fn as_any(&self) -> &::std::any::Any {
+        self as &::std::any::Any
+    }
+    fn as_any_mut(&mut self) -> &mut ::std::any::Any {
+        self as &mut ::std::any::Any
+    }
+    fn into_any(self: Box<Self>) -> ::std::boxed::Box<::std::any::Any> {
+        self
+    }
+
+    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+        Self::descriptor_static()
+    }
+
+    fn new() -> ByCompanyRequest {
+        ByCompanyRequest::new()
+    }
+
+    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
+            lock: ::protobuf::lazy::ONCE_INIT,
+            ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
+        };
+        unsafe {
+            descriptor.get(|| {
+                let mut fields = ::std::vec::Vec::new();
+                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                    "company_name",
+                    |m: &ByCompanyRequest| { &m.company_name },
+                    |m: &mut ByCompanyRequest| { &mut m.company_name },
+                ));
+                ::protobuf::reflect::MessageDescriptor::new::<ByCompanyRequest>(
+                    "ByCompanyRequest",
+                    fields,
+                    file_descriptor_proto()
+                )
+            })
+        }
+    }
+
+    fn default_instance() -> &'static ByCompanyRequest {
+        static mut instance: ::protobuf::lazy::Lazy<ByCompanyRequest> = ::protobuf::lazy::Lazy {
+            lock: ::protobuf::lazy::ONCE_INIT,
+            ptr: 0 as *const ByCompanyRequest,
+        };
+        unsafe {
+            instance.get(ByCompanyRequest::new)
+        }
+    }
+}
+
+impl ::protobuf::Clear for ByCompanyRequest {
+    fn clear(&mut self) {
+        self.company_name.clear();
+        self.unknown_fields.clear();
+    }
+}
+
+impl ::std::fmt::Debug for ByCompanyRequest {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+        ::protobuf::text_format::fmt(self, f)
+    }
+}
+
+impl ::protobuf::reflect::ProtobufValue for ByCompanyRequest {
+    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
+        ::protobuf::reflect::ProtobufValueRef::Message(self)
+    }
+}
+
+#[derive(PartialEq,Clone,Default)]
+#[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
+pub struct ByCompanyReply {
+    // message fields
+    pub invoices: ::protobuf::RepeatedField<Invoice>,
+    // special fields
+    #[cfg_attr(feature = "with-serde", serde(skip))]
+    pub unknown_fields: ::protobuf::UnknownFields,
+    #[cfg_attr(feature = "with-serde", serde(skip))]
+    pub cached_size: ::protobuf::CachedSize,
+}
+
+impl<'a> ::std::default::Default for &'a ByCompanyReply {
+    fn default() -> &'a ByCompanyReply {
+        <ByCompanyReply as ::protobuf::Message>::default_instance()
+    }
+}
+
+impl ByCompanyReply {
+    pub fn new() -> ByCompanyReply {
+        ::std::default::Default::default()
+    }
+
+    // repeated .Invoice invoices = 1;
+
+
+    pub fn get_invoices(&self) -> &[Invoice] {
+        &self.invoices
+    }
+    pub fn clear_invoices(&mut self) {
+        self.invoices.clear();
+    }
+
+    // Param is passed by value, moved
+    pub fn set_invoices(&mut self, v: ::protobuf::RepeatedField<Invoice>) {
+        self.invoices = v;
+    }
+
+    // Mutable pointer to the field.
+    pub fn mut_invoices(&mut self) -> &mut ::protobuf::RepeatedField<Invoice> {
+        &mut self.invoices
+    }
+
+    // Take field
+    pub fn take_invoices(&mut self) -> ::protobuf::RepeatedField<Invoice> {
+        ::std::mem::replace(&mut self.invoices, ::protobuf::RepeatedField::new())
+    }
+}
+
+impl ::protobuf::Message for ByCompanyReply {
+    fn is_initialized(&self) -> bool {
+        for v in &self.invoices {
+            if !v.is_initialized() {
+                return false;
+            }
+        };
+        true
+    }
+
+    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
+        while !is.eof()? {
+            let (field_number, wire_type) = is.read_tag_unpack()?;
+            match field_number {
+                1 => {
+                    ::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.invoices)?;
+                },
+                _ => {
+                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                },
+            };
+        }
+        ::std::result::Result::Ok(())
+    }
+
+    // Compute sizes of nested messages
+    #[allow(unused_variables)]
+    fn compute_size(&self) -> u32 {
+        let mut my_size = 0;
+        for value in &self.invoices {
+            let len = value.compute_size();
+            my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
+        };
+        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        self.cached_size.set(my_size);
+        my_size
+    }
+
+    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
+        for v in &self.invoices {
+            os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited)?;
+            os.write_raw_varint32(v.get_cached_size())?;
+            v.write_to_with_cached_sizes(os)?;
+        };
+        os.write_unknown_fields(self.get_unknown_fields())?;
+        ::std::result::Result::Ok(())
+    }
+
+    fn get_cached_size(&self) -> u32 {
+        self.cached_size.get()
+    }
+
+    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
+        &self.unknown_fields
+    }
+
+    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
+        &mut self.unknown_fields
+    }
+
+    fn as_any(&self) -> &::std::any::Any {
+        self as &::std::any::Any
+    }
+    fn as_any_mut(&mut self) -> &mut ::std::any::Any {
+        self as &mut ::std::any::Any
+    }
+    fn into_any(self: Box<Self>) -> ::std::boxed::Box<::std::any::Any> {
+        self
+    }
+
+    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+        Self::descriptor_static()
+    }
+
+    fn new() -> ByCompanyReply {
+        ByCompanyReply::new()
+    }
+
+    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
+            lock: ::protobuf::lazy::ONCE_INIT,
+            ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
+        };
+        unsafe {
+            descriptor.get(|| {
+                let mut fields = ::std::vec::Vec::new();
+                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<Invoice>>(
+                    "invoices",
+                    |m: &ByCompanyReply| { &m.invoices },
+                    |m: &mut ByCompanyReply| { &mut m.invoices },
+                ));
+                ::protobuf::reflect::MessageDescriptor::new::<ByCompanyReply>(
+                    "ByCompanyReply",
+                    fields,
+                    file_descriptor_proto()
+                )
+            })
+        }
+    }
+
+    fn default_instance() -> &'static ByCompanyReply {
+        static mut instance: ::protobuf::lazy::Lazy<ByCompanyReply> = ::protobuf::lazy::Lazy {
+            lock: ::protobuf::lazy::ONCE_INIT,
+            ptr: 0 as *const ByCompanyReply,
+        };
+        unsafe {
+            instance.get(ByCompanyReply::new)
+        }
+    }
+}
+
+impl ::protobuf::Clear for ByCompanyReply {
+    fn clear(&mut self) {
+        self.invoices.clear();
+        self.unknown_fields.clear();
+    }
+}
+
+impl ::std::fmt::Debug for ByCompanyReply {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+        ::protobuf::text_format::fmt(self, f)
+    }
+}
+
+impl ::protobuf::reflect::ProtobufValue for ByCompanyReply {
+    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
+        ::protobuf::reflect::ProtobufValueRef::Message(self)
+    }
+}
+
+#[derive(PartialEq,Clone,Default)]
+#[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 pub struct DetectDuplicateRequest {
     // message fields
     pub invoice: ::protobuf::SingularPtrField<Invoice>,
@@ -2056,30 +2484,375 @@ impl ::protobuf::reflect::ProtobufValue for DetectDuplicateReply_Result {
     }
 }
 
+#[derive(PartialEq,Clone,Default)]
+#[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
+pub struct RatingRequest {
+    // message fields
+    pub company_name: ::std::string::String,
+    // special fields
+    #[cfg_attr(feature = "with-serde", serde(skip))]
+    pub unknown_fields: ::protobuf::UnknownFields,
+    #[cfg_attr(feature = "with-serde", serde(skip))]
+    pub cached_size: ::protobuf::CachedSize,
+}
+
+impl<'a> ::std::default::Default for &'a RatingRequest {
+    fn default() -> &'a RatingRequest {
+        <RatingRequest as ::protobuf::Message>::default_instance()
+    }
+}
+
+impl RatingRequest {
+    pub fn new() -> RatingRequest {
+        ::std::default::Default::default()
+    }
+
+    // string company_name = 1;
+
+
+    pub fn get_company_name(&self) -> &str {
+        &self.company_name
+    }
+    pub fn clear_company_name(&mut self) {
+        self.company_name.clear();
+    }
+
+    // Param is passed by value, moved
+    pub fn set_company_name(&mut self, v: ::std::string::String) {
+        self.company_name = v;
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_company_name(&mut self) -> &mut ::std::string::String {
+        &mut self.company_name
+    }
+
+    // Take field
+    pub fn take_company_name(&mut self) -> ::std::string::String {
+        ::std::mem::replace(&mut self.company_name, ::std::string::String::new())
+    }
+}
+
+impl ::protobuf::Message for RatingRequest {
+    fn is_initialized(&self) -> bool {
+        true
+    }
+
+    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
+        while !is.eof()? {
+            let (field_number, wire_type) = is.read_tag_unpack()?;
+            match field_number {
+                1 => {
+                    ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.company_name)?;
+                },
+                _ => {
+                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                },
+            };
+        }
+        ::std::result::Result::Ok(())
+    }
+
+    // Compute sizes of nested messages
+    #[allow(unused_variables)]
+    fn compute_size(&self) -> u32 {
+        let mut my_size = 0;
+        if !self.company_name.is_empty() {
+            my_size += ::protobuf::rt::string_size(1, &self.company_name);
+        }
+        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        self.cached_size.set(my_size);
+        my_size
+    }
+
+    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
+        if !self.company_name.is_empty() {
+            os.write_string(1, &self.company_name)?;
+        }
+        os.write_unknown_fields(self.get_unknown_fields())?;
+        ::std::result::Result::Ok(())
+    }
+
+    fn get_cached_size(&self) -> u32 {
+        self.cached_size.get()
+    }
+
+    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
+        &self.unknown_fields
+    }
+
+    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
+        &mut self.unknown_fields
+    }
+
+    fn as_any(&self) -> &::std::any::Any {
+        self as &::std::any::Any
+    }
+    fn as_any_mut(&mut self) -> &mut ::std::any::Any {
+        self as &mut ::std::any::Any
+    }
+    fn into_any(self: Box<Self>) -> ::std::boxed::Box<::std::any::Any> {
+        self
+    }
+
+    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+        Self::descriptor_static()
+    }
+
+    fn new() -> RatingRequest {
+        RatingRequest::new()
+    }
+
+    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
+            lock: ::protobuf::lazy::ONCE_INIT,
+            ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
+        };
+        unsafe {
+            descriptor.get(|| {
+                let mut fields = ::std::vec::Vec::new();
+                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                    "company_name",
+                    |m: &RatingRequest| { &m.company_name },
+                    |m: &mut RatingRequest| { &mut m.company_name },
+                ));
+                ::protobuf::reflect::MessageDescriptor::new::<RatingRequest>(
+                    "RatingRequest",
+                    fields,
+                    file_descriptor_proto()
+                )
+            })
+        }
+    }
+
+    fn default_instance() -> &'static RatingRequest {
+        static mut instance: ::protobuf::lazy::Lazy<RatingRequest> = ::protobuf::lazy::Lazy {
+            lock: ::protobuf::lazy::ONCE_INIT,
+            ptr: 0 as *const RatingRequest,
+        };
+        unsafe {
+            instance.get(RatingRequest::new)
+        }
+    }
+}
+
+impl ::protobuf::Clear for RatingRequest {
+    fn clear(&mut self) {
+        self.company_name.clear();
+        self.unknown_fields.clear();
+    }
+}
+
+impl ::std::fmt::Debug for RatingRequest {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+        ::protobuf::text_format::fmt(self, f)
+    }
+}
+
+impl ::protobuf::reflect::ProtobufValue for RatingRequest {
+    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
+        ::protobuf::reflect::ProtobufValueRef::Message(self)
+    }
+}
+
+#[derive(PartialEq,Clone,Default)]
+#[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
+pub struct RatingReply {
+    // message fields
+    pub bill_amount: f64,
+    // special fields
+    #[cfg_attr(feature = "with-serde", serde(skip))]
+    pub unknown_fields: ::protobuf::UnknownFields,
+    #[cfg_attr(feature = "with-serde", serde(skip))]
+    pub cached_size: ::protobuf::CachedSize,
+}
+
+impl<'a> ::std::default::Default for &'a RatingReply {
+    fn default() -> &'a RatingReply {
+        <RatingReply as ::protobuf::Message>::default_instance()
+    }
+}
+
+impl RatingReply {
+    pub fn new() -> RatingReply {
+        ::std::default::Default::default()
+    }
+
+    // double bill_amount = 1;
+
+
+    pub fn get_bill_amount(&self) -> f64 {
+        self.bill_amount
+    }
+    pub fn clear_bill_amount(&mut self) {
+        self.bill_amount = 0.;
+    }
+
+    // Param is passed by value, moved
+    pub fn set_bill_amount(&mut self, v: f64) {
+        self.bill_amount = v;
+    }
+}
+
+impl ::protobuf::Message for RatingReply {
+    fn is_initialized(&self) -> bool {
+        true
+    }
+
+    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
+        while !is.eof()? {
+            let (field_number, wire_type) = is.read_tag_unpack()?;
+            match field_number {
+                1 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeFixed64 {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    let tmp = is.read_double()?;
+                    self.bill_amount = tmp;
+                },
+                _ => {
+                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                },
+            };
+        }
+        ::std::result::Result::Ok(())
+    }
+
+    // Compute sizes of nested messages
+    #[allow(unused_variables)]
+    fn compute_size(&self) -> u32 {
+        let mut my_size = 0;
+        if self.bill_amount != 0. {
+            my_size += 9;
+        }
+        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        self.cached_size.set(my_size);
+        my_size
+    }
+
+    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
+        if self.bill_amount != 0. {
+            os.write_double(1, self.bill_amount)?;
+        }
+        os.write_unknown_fields(self.get_unknown_fields())?;
+        ::std::result::Result::Ok(())
+    }
+
+    fn get_cached_size(&self) -> u32 {
+        self.cached_size.get()
+    }
+
+    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
+        &self.unknown_fields
+    }
+
+    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
+        &mut self.unknown_fields
+    }
+
+    fn as_any(&self) -> &::std::any::Any {
+        self as &::std::any::Any
+    }
+    fn as_any_mut(&mut self) -> &mut ::std::any::Any {
+        self as &mut ::std::any::Any
+    }
+    fn into_any(self: Box<Self>) -> ::std::boxed::Box<::std::any::Any> {
+        self
+    }
+
+    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+        Self::descriptor_static()
+    }
+
+    fn new() -> RatingReply {
+        RatingReply::new()
+    }
+
+    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
+            lock: ::protobuf::lazy::ONCE_INIT,
+            ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
+        };
+        unsafe {
+            descriptor.get(|| {
+                let mut fields = ::std::vec::Vec::new();
+                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeDouble>(
+                    "bill_amount",
+                    |m: &RatingReply| { &m.bill_amount },
+                    |m: &mut RatingReply| { &mut m.bill_amount },
+                ));
+                ::protobuf::reflect::MessageDescriptor::new::<RatingReply>(
+                    "RatingReply",
+                    fields,
+                    file_descriptor_proto()
+                )
+            })
+        }
+    }
+
+    fn default_instance() -> &'static RatingReply {
+        static mut instance: ::protobuf::lazy::Lazy<RatingReply> = ::protobuf::lazy::Lazy {
+            lock: ::protobuf::lazy::ONCE_INIT,
+            ptr: 0 as *const RatingReply,
+        };
+        unsafe {
+            instance.get(RatingReply::new)
+        }
+    }
+}
+
+impl ::protobuf::Clear for RatingReply {
+    fn clear(&mut self) {
+        self.bill_amount = 0.;
+        self.unknown_fields.clear();
+    }
+}
+
+impl ::std::fmt::Debug for RatingReply {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+        ::protobuf::text_format::fmt(self, f)
+    }
+}
+
+impl ::protobuf::reflect::ProtobufValue for RatingReply {
+    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
+        ::protobuf::reflect::ProtobufValueRef::Message(self)
+    }
+}
+
 static file_descriptor_proto_data: &'static [u8] = b"\
     \n\rinvoice.proto\"G\n\x07Address\x12\x12\n\x04city\x18\x01\x20\x01(\tR\
     \x04city\x12\x16\n\x06street\x18\x02\x20\x01(\tR\x06street\x12\x10\n\x03\
-    zip\x18\x03\x20\x01(\tR\x03zip\"\x9d\x01\n\x07Invoice\x12!\n\x07bill_to\
-    \x18\x02\x20\x01(\x0b2\x08.AddressR\x06billTo\x12!\n\x0ccompany_name\x18\
-    \x03\x20\x01(\tR\x0bcompanyName\x12\x20\n\x06addres\x18\x04\x20\x01(\x0b\
-    2\x08.AddressR\x06addres\x12\x14\n\x05phone\x18\x05\x20\x01(\tR\x05phone\
-    \x12\x14\n\x05email\x18\x06\x20\x01(\tR\x05email\":\n\x14CreateInvoiceRe\
-    quest\x12\"\n\x07invoice\x18\x01\x20\x01(\x0b2\x08.InvoiceR\x07invoice\"\
-    ;\n\x12CreateInvoiceReply\x12%\n\x0einvoice_number\x18\x01\x20\x01(\tR\r\
-    invoiceNumber\"\x14\n\x12ListInvoiceRequest\";\n\x10ListInvoiceReply\x12\
-    '\n\x0finvoice_numbers\x18\x01\x20\x03(\tR\x0einvoiceNumbers\"=\n\x14Rem\
-    oveInvoiceRequest\x12%\n\x0einvoice_number\x18\x01\x20\x01(\tR\rinvoiceN\
-    umber\";\n\x12RemoveInvoiceReply\x12%\n\x0einvoice_number\x18\x01\x20\
-    \x01(\tR\rinvoiceNumber\"<\n\x16DetectDuplicateRequest\x12\"\n\x07invoic\
-    e\x18\x01\x20\x01(\x0b2\x08.InvoiceR\x07invoice\"m\n\x14DetectDuplicateR\
-    eply\x124\n\x06result\x18\x01\x20\x01(\x0e2\x1c.DetectDuplicateReply.Res\
-    ultR\x06result\"\x1f\n\x06Result\x12\x06\n\x02OK\x10\0\x12\r\n\tDUPLICAT\
-    E\x10\x012\xac\x01\n\x08Invoices\x126\n\x06Create\x12\x15.CreateInvoiceR\
-    equest\x1a\x13.CreateInvoiceReply\"\0\x120\n\x04List\x12\x13.ListInvoice\
-    Request\x1a\x11.ListInvoiceReply\"\0\x126\n\x06Remove\x12\x15.RemoveInvo\
-    iceRequest\x1a\x13.RemoveInvoiceReply\"\02O\n\x08Analysis\x12C\n\x0fDete\
-    ctDuplicate\x12\x17.DetectDuplicateRequest\x1a\x15.DetectDuplicateReply\
-    \"\0b\x06proto3\
+    zip\x18\x03\x20\x01(\tR\x03zip\"\xdc\x01\n\x07Invoice\x12\x1c\n\ttimesta\
+    mp\x18\x01\x20\x01(\tR\ttimestamp\x12!\n\x07bill_to\x18\x02\x20\x01(\x0b\
+    2\x08.AddressR\x06billTo\x12!\n\x0ccompany_name\x18\x03\x20\x01(\tR\x0bc\
+    ompanyName\x12\x20\n\x06addres\x18\x04\x20\x01(\x0b2\x08.AddressR\x06add\
+    res\x12\x14\n\x05phone\x18\x05\x20\x01(\tR\x05phone\x12\x14\n\x05email\
+    \x18\x06\x20\x01(\tR\x05email\x12\x1f\n\x0btotal_price\x18\x07\x20\x01(\
+    \x01R\ntotalPrice\":\n\x14CreateInvoiceRequest\x12\"\n\x07invoice\x18\
+    \x01\x20\x01(\x0b2\x08.InvoiceR\x07invoice\";\n\x12CreateInvoiceReply\
+    \x12%\n\x0einvoice_number\x18\x01\x20\x01(\tR\rinvoiceNumber\"\x14\n\x12\
+    ListInvoiceRequest\";\n\x10ListInvoiceReply\x12'\n\x0finvoice_numbers\
+    \x18\x01\x20\x03(\tR\x0einvoiceNumbers\"=\n\x14RemoveInvoiceRequest\x12%\
+    \n\x0einvoice_number\x18\x01\x20\x01(\tR\rinvoiceNumber\";\n\x12RemoveIn\
+    voiceReply\x12%\n\x0einvoice_number\x18\x01\x20\x01(\tR\rinvoiceNumber\"\
+    5\n\x10ByCompanyRequest\x12!\n\x0ccompany_name\x18\x01\x20\x01(\tR\x0bco\
+    mpanyName\"6\n\x0eByCompanyReply\x12$\n\x08invoices\x18\x01\x20\x03(\x0b\
+    2\x08.InvoiceR\x08invoices\"<\n\x16DetectDuplicateRequest\x12\"\n\x07inv\
+    oice\x18\x01\x20\x01(\x0b2\x08.InvoiceR\x07invoice\"m\n\x14DetectDuplica\
+    teReply\x124\n\x06result\x18\x01\x20\x01(\x0e2\x1c.DetectDuplicateReply.\
+    ResultR\x06result\"\x1f\n\x06Result\x12\x06\n\x02OK\x10\0\x12\r\n\tDUPLI\
+    CATE\x10\x01\"2\n\rRatingRequest\x12!\n\x0ccompany_name\x18\x01\x20\x01(\
+    \tR\x0bcompanyName\".\n\x0bRatingReply\x12\x1f\n\x0bbill_amount\x18\x01\
+    \x20\x01(\x01R\nbillAmount2\xdf\x01\n\x08Invoices\x126\n\x06Create\x12\
+    \x15.CreateInvoiceRequest\x1a\x13.CreateInvoiceReply\"\0\x120\n\x04List\
+    \x12\x13.ListInvoiceRequest\x1a\x11.ListInvoiceReply\"\0\x126\n\x06Remov\
+    e\x12\x15.RemoveInvoiceRequest\x1a\x13.RemoveInvoiceReply\"\0\x121\n\tBy\
+    Company\x12\x11.ByCompanyRequest\x1a\x0f.ByCompanyReply\"\02O\n\x08Analy\
+    sis\x12C\n\x0fDetectDuplicate\x12\x17.DetectDuplicateRequest\x1a\x15.Det\
+    ectDuplicateReply\"\028\n\x06Rating\x12.\n\x0cGenerateBill\x12\x0e.Ratin\
+    gRequest\x1a\x0c.RatingReply\"\0b\x06proto3\
 ";
 
 static mut file_descriptor_proto_lazy: ::protobuf::lazy::Lazy<::protobuf::descriptor::FileDescriptorProto> = ::protobuf::lazy::Lazy {
