@@ -6,8 +6,6 @@ use futures::sync::oneshot;
 use futures::Future;
 use grpcio::{Environment, ServerBuilder};
 
-mod db;
-
 #[path = "../protos/invoice.rs"]
 mod invoice;
 
@@ -19,7 +17,7 @@ use service::RatingService;
 
 fn main() {
     let env = Arc::new(Environment::new(1));
-    let service = invoice_grpc::create_invoices(RatingService());
+    let service = invoice_grpc::create_rating(RatingService());
     let mut server = ServerBuilder::new(env)
         .register_service(service)
         .bind("127.0.0.1", 50_053)
