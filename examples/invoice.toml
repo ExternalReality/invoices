@@ -1,6 +1,8 @@
 company_name = "Company"
 email = "email"
 phone = "222-2222"
+total_price = 154.22
+timestamp = "383838383838"
 
 [address]
 street = "street"
@@ -11,5 +13,6 @@ zip = "zip"
 street = "17 Turk Hill Rd"
 city = "brewster"
 zip = "10509"
+
 
 
