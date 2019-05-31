@@ -31,6 +31,6 @@ impl Rating for RatingService {
     }
 }
 
-fn calculate_bill(invoices: &[Invoice]) -> i64 {
-    10
+fn calculate_bill(invoices: &[Invoice]) -> f64 {
+    invoices.iter().fold(0.0, |acc, x| acc + x.total_price)
 }

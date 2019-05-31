@@ -289,7 +289,7 @@ pub struct Invoice {
     pub addres: ::protobuf::SingularPtrField<Address>,
     pub phone: ::std::string::String,
     pub email: ::std::string::String,
-    pub total_price: f32,
+    pub total_price: f64,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
@@ -478,10 +478,10 @@ impl Invoice {
         ::std::mem::replace(&mut self.email, ::std::string::String::new())
     }
 
-    // float total_price = 7;
+    // double total_price = 7;
 
 
-    pub fn get_total_price(&self) -> f32 {
+    pub fn get_total_price(&self) -> f64 {
         self.total_price
     }
     pub fn clear_total_price(&mut self) {
@@ -489,7 +489,7 @@ impl Invoice {
     }
 
     // Param is passed by value, moved
-    pub fn set_total_price(&mut self, v: f32) {
+    pub fn set_total_price(&mut self, v: f64) {
         self.total_price = v;
     }
 }
@@ -532,10 +532,10 @@ impl ::protobuf::Message for Invoice {
                     ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.email)?;
                 },
                 7 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeFixed32 {
+                    if wire_type != ::protobuf::wire_format::WireTypeFixed64 {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    let tmp = is.read_float()?;
+                    let tmp = is.read_double()?;
                     self.total_price = tmp;
                 },
                 _ => {
@@ -571,7 +571,7 @@ impl ::protobuf::Message for Invoice {
             my_size += ::protobuf::rt::string_size(6, &self.email);
         }
         if self.total_price != 0. {
-            my_size += 5;
+            my_size += 9;
         }
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
@@ -602,7 +602,7 @@ impl ::protobuf::Message for Invoice {
             os.write_string(6, &self.email)?;
         }
         if self.total_price != 0. {
-            os.write_float(7, self.total_price)?;
+            os.write_double(7, self.total_price)?;
         }
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
@@ -676,7 +676,7 @@ impl ::protobuf::Message for Invoice {
                     |m: &Invoice| { &m.email },
                     |m: &mut Invoice| { &mut m.email },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeFloat>(
+                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeDouble>(
                     "total_price",
                     |m: &Invoice| { &m.total_price },
                     |m: &mut Invoice| { &mut m.total_price },
@@ -2660,7 +2660,7 @@ impl ::protobuf::reflect::ProtobufValue for RatingRequest {
 #[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 pub struct RatingReply {
     // message fields
-    pub bill_amount: i64,
+    pub bill_amount: f64,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
@@ -2679,18 +2679,18 @@ impl RatingReply {
         ::std::default::Default::default()
     }
 
-    // sint64 bill_amount = 1;
+    // double bill_amount = 1;
 
 
-    pub fn get_bill_amount(&self) -> i64 {
+    pub fn get_bill_amount(&self) -> f64 {
         self.bill_amount
     }
     pub fn clear_bill_amount(&mut self) {
-        self.bill_amount = 0;
+        self.bill_amount = 0.;
     }
 
     // Param is passed by value, moved
-    pub fn set_bill_amount(&mut self, v: i64) {
+    pub fn set_bill_amount(&mut self, v: f64) {
         self.bill_amount = v;
     }
 }
@@ -2705,10 +2705,10 @@ impl ::protobuf::Message for RatingReply {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                    if wire_type != ::protobuf::wire_format::WireTypeFixed64 {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    let tmp = is.read_sint64()?;
+                    let tmp = is.read_double()?;
                     self.bill_amount = tmp;
                 },
                 _ => {
@@ -2723,8 +2723,8 @@ impl ::protobuf::Message for RatingReply {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
-        if self.bill_amount != 0 {
-            my_size += ::protobuf::rt::value_varint_zigzag_size(1, self.bill_amount);
+        if self.bill_amount != 0. {
+            my_size += 9;
         }
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
@@ -2732,8 +2732,8 @@ impl ::protobuf::Message for RatingReply {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        if self.bill_amount != 0 {
-            os.write_sint64(1, self.bill_amount)?;
+        if self.bill_amount != 0. {
+            os.write_double(1, self.bill_amount)?;
         }
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
@@ -2777,7 +2777,7 @@ impl ::protobuf::Message for RatingReply {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeSint64>(
+                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeDouble>(
                     "bill_amount",
                     |m: &RatingReply| { &m.bill_amount },
                     |m: &mut RatingReply| { &mut m.bill_amount },
@@ -2804,7 +2804,7 @@ impl ::protobuf::Message for RatingReply {
 
 impl ::protobuf::Clear for RatingReply {
     fn clear(&mut self) {
-        self.bill_amount = 0;
+        self.bill_amount = 0.;
         self.unknown_fields.clear();
     }
 }
@@ -2830,7 +2830,7 @@ static file_descriptor_proto_data: &'static [u8] = b"\
     ompanyName\x12\x20\n\x06addres\x18\x04\x20\x01(\x0b2\x08.AddressR\x06add\
     res\x12\x14\n\x05phone\x18\x05\x20\x01(\tR\x05phone\x12\x14\n\x05email\
     \x18\x06\x20\x01(\tR\x05email\x12\x1f\n\x0btotal_price\x18\x07\x20\x01(\
-    \x02R\ntotalPrice\":\n\x14CreateInvoiceRequest\x12\"\n\x07invoice\x18\
+    \x01R\ntotalPrice\":\n\x14CreateInvoiceRequest\x12\"\n\x07invoice\x18\
     \x01\x20\x01(\x0b2\x08.InvoiceR\x07invoice\";\n\x12CreateInvoiceReply\
     \x12%\n\x0einvoice_number\x18\x01\x20\x01(\tR\rinvoiceNumber\"\x14\n\x12\
     ListInvoiceRequest\";\n\x10ListInvoiceReply\x12'\n\x0finvoice_numbers\
@@ -2845,7 +2845,7 @@ static file_descriptor_proto_data: &'static [u8] = b"\
     ResultR\x06result\"\x1f\n\x06Result\x12\x06\n\x02OK\x10\0\x12\r\n\tDUPLI\
     CATE\x10\x01\"2\n\rRatingRequest\x12!\n\x0ccompany_name\x18\x01\x20\x01(\
     \tR\x0bcompanyName\".\n\x0bRatingReply\x12\x1f\n\x0bbill_amount\x18\x01\
-    \x20\x01(\x12R\nbillAmount2\xdf\x01\n\x08Invoices\x126\n\x06Create\x12\
+    \x20\x01(\x01R\nbillAmount2\xdf\x01\n\x08Invoices\x126\n\x06Create\x12\
     \x15.CreateInvoiceRequest\x1a\x13.CreateInvoiceReply\"\0\x120\n\x04List\
     \x12\x13.ListInvoiceRequest\x1a\x11.ListInvoiceReply\"\0\x126\n\x06Remov\
     e\x12\x15.RemoveInvoiceRequest\x1a\x13.RemoveInvoiceReply\"\0\x121\n\tBy\
