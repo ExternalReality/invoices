@@ -39,6 +39,13 @@ const METHOD_INVOICES_REMOVE: ::grpcio::Method<super::invoice::RemoveInvoiceRequ
     resp_mar: ::grpcio::Marshaller { ser: ::grpcio::pb_ser, de: ::grpcio::pb_de },
 };
 
+const METHOD_INVOICES_BY_COMPANY: ::grpcio::Method<super::invoice::ByCompanyRequest, super::invoice::ByCompanyReply> = ::grpcio::Method {
+    ty: ::grpcio::MethodType::Unary,
+    name: "/Invoices/ByCompany",
+    req_mar: ::grpcio::Marshaller { ser: ::grpcio::pb_ser, de: ::grpcio::pb_de },
+    resp_mar: ::grpcio::Marshaller { ser: ::grpcio::pb_ser, de: ::grpcio::pb_de },
+};
+
 #[derive(Clone)]
 pub struct InvoicesClient {
     client: ::grpcio::Client,
@@ -98,6 +105,22 @@ impl InvoicesClient {
     pub fn remove_async(&self, req: &super::invoice::RemoveInvoiceRequest) -> ::grpcio::Result<::grpcio::ClientUnaryReceiver<super::invoice::RemoveInvoiceReply>> {
         self.remove_async_opt(req, ::grpcio::CallOption::default())
     }
+
+    pub fn by_company_opt(&self, req: &super::invoice::ByCompanyRequest, opt: ::grpcio::CallOption) -> ::grpcio::Result<super::invoice::ByCompanyReply> {
+        self.client.unary_call(&METHOD_INVOICES_BY_COMPANY, req, opt)
+    }
+
+    pub fn by_company(&self, req: &super::invoice::ByCompanyRequest) -> ::grpcio::Result<super::invoice::ByCompanyReply> {
+        self.by_company_opt(req, ::grpcio::CallOption::default())
+    }
+
+    pub fn by_company_async_opt(&self, req: &super::invoice::ByCompanyRequest, opt: ::grpcio::CallOption) -> ::grpcio::Result<::grpcio::ClientUnaryReceiver<super::invoice::ByCompanyReply>> {
+        self.client.unary_call_async(&METHOD_INVOICES_BY_COMPANY, req, opt)
+    }
+
+    pub fn by_company_async(&self, req: &super::invoice::ByCompanyRequest) -> ::grpcio::Result<::grpcio::ClientUnaryReceiver<super::invoice::ByCompanyReply>> {
+        self.by_company_async_opt(req, ::grpcio::CallOption::default())
+    }
     pub fn spawn<F>(&self, f: F) where F: ::futures::Future<Item = (), Error = ()> + Send + 'static {
         self.client.spawn(f)
     }
@@ -107,6 +130,7 @@ pub trait Invoices {
     fn create(&mut self, ctx: ::grpcio::RpcContext, req: super::invoice::CreateInvoiceRequest, sink: ::grpcio::UnarySink<super::invoice::CreateInvoiceReply>);
     fn list(&mut self, ctx: ::grpcio::RpcContext, req: super::invoice::ListInvoiceRequest, sink: ::grpcio::UnarySink<super::invoice::ListInvoiceReply>);
     fn remove(&mut self, ctx: ::grpcio::RpcContext, req: super::invoice::RemoveInvoiceRequest, sink: ::grpcio::UnarySink<super::invoice::RemoveInvoiceReply>);
+    fn by_company(&mut self, ctx: ::grpcio::RpcContext, req: super::invoice::ByCompanyRequest, sink: ::grpcio::UnarySink<super::invoice::ByCompanyReply>);
 }
 
 pub fn create_invoices<S: Invoices + Send + Clone + 'static>(s: S) -> ::grpcio::Service {
@@ -122,6 +146,10 @@ pub fn create_invoices<S: Invoices + Send + Clone + 'static>(s: S) -> ::grpcio::
     let mut instance = s.clone();
     builder = builder.add_unary_handler(&METHOD_INVOICES_REMOVE, move |ctx, req, resp| {
         instance.remove(ctx, req, resp)
+    });
+    let mut instance = s.clone();
+    builder = builder.add_unary_handler(&METHOD_INVOICES_BY_COMPANY, move |ctx, req, resp| {
+        instance.by_company(ctx, req, resp)
     });
     builder.build()
 }
@@ -174,6 +202,58 @@ pub fn create_analysis<S: Analysis + Send + Clone + 'static>(s: S) -> ::grpcio::
     let mut instance = s.clone();
     builder = builder.add_unary_handler(&METHOD_ANALYSIS_DETECT_DUPLICATE, move |ctx, req, resp| {
         instance.detect_duplicate(ctx, req, resp)
+    });
+    builder.build()
+}
+
+const METHOD_RATING_GENERATE_BILL: ::grpcio::Method<super::invoice::RatingRequest, super::invoice::RatingReply> = ::grpcio::Method {
+    ty: ::grpcio::MethodType::Unary,
+    name: "/Rating/GenerateBill",
+    req_mar: ::grpcio::Marshaller { ser: ::grpcio::pb_ser, de: ::grpcio::pb_de },
+    resp_mar: ::grpcio::Marshaller { ser: ::grpcio::pb_ser, de: ::grpcio::pb_de },
+};
+
+#[derive(Clone)]
+pub struct RatingClient {
+    client: ::grpcio::Client,
+}
+
+impl RatingClient {
+    pub fn new(channel: ::grpcio::Channel) -> Self {
+        RatingClient {
+            client: ::grpcio::Client::new(channel),
+        }
+    }
+
+    pub fn generate_bill_opt(&self, req: &super::invoice::RatingRequest, opt: ::grpcio::CallOption) -> ::grpcio::Result<super::invoice::RatingReply> {
+        self.client.unary_call(&METHOD_RATING_GENERATE_BILL, req, opt)
+    }
+
+    pub fn generate_bill(&self, req: &super::invoice::RatingRequest) -> ::grpcio::Result<super::invoice::RatingReply> {
+        self.generate_bill_opt(req, ::grpcio::CallOption::default())
+    }
+
+    pub fn generate_bill_async_opt(&self, req: &super::invoice::RatingRequest, opt: ::grpcio::CallOption) -> ::grpcio::Result<::grpcio::ClientUnaryReceiver<super::invoice::RatingReply>> {
+        self.client.unary_call_async(&METHOD_RATING_GENERATE_BILL, req, opt)
+    }
+
+    pub fn generate_bill_async(&self, req: &super::invoice::RatingRequest) -> ::grpcio::Result<::grpcio::ClientUnaryReceiver<super::invoice::RatingReply>> {
+        self.generate_bill_async_opt(req, ::grpcio::CallOption::default())
+    }
+    pub fn spawn<F>(&self, f: F) where F: ::futures::Future<Item = (), Error = ()> + Send + 'static {
+        self.client.spawn(f)
+    }
+}
+
+pub trait Rating {
+    fn generate_bill(&mut self, ctx: ::grpcio::RpcContext, req: super::invoice::RatingRequest, sink: ::grpcio::UnarySink<super::invoice::RatingReply>);
+}
+
+pub fn create_rating<S: Rating + Send + Clone + 'static>(s: S) -> ::grpcio::Service {
+    let mut builder = ::grpcio::ServiceBuilder::new();
+    let mut instance = s.clone();
+    builder = builder.add_unary_handler(&METHOD_RATING_GENERATE_BILL, move |ctx, req, resp| {
+        instance.generate_bill(ctx, req, resp)
     });
     builder.build()
 }

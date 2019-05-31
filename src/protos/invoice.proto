@@ -4,6 +4,7 @@ service Invoices {
   rpc Create(CreateInvoiceRequest) returns (CreateInvoiceReply) {}
   rpc List(ListInvoiceRequest) returns (ListInvoiceReply) {}
   rpc Remove(RemoveInvoiceRequest) returns (RemoveInvoiceReply) {}
+  rpc ByCompany(ByCompanyRequest) returns (ByCompanyReply) {}
 }
 
 message Address {
@@ -13,7 +14,7 @@ message Address {
 }
 
 message Invoice {
-  Timestamp date = 1;
+  string timestamp = 1;
   Address bill_to = 2;
   string company_name = 3;
   Address addres = 4;
@@ -34,6 +35,10 @@ message RemoveInvoiceRequest { string invoice_number = 1; }
 
 message RemoveInvoiceReply { string invoice_number = 1; }
 
+message ByCompanyRequest { string company_name = 1; }
+
+message ByCompanyReply { repeated Invoice invoices = 1; }
+
 service Analysis {
   rpc DetectDuplicate(DetectDuplicateRequest) returns (DetectDuplicateReply) {}
 }
@@ -48,10 +53,10 @@ message DetectDuplicateReply {
   Result result = 1;
 }
 
-service Analysis {
-  rpc DetectDuplicate(RatingRequest) returns (RatingReply) {}
+service Rating {
+  rpc GenerateBill(RatingRequest) returns (RatingReply) {}
 }
 
 message RatingRequest { string company_name = 1; }
 
-message RatingReply { string bill_amount  = 1; }
+message RatingReply { string bill_amount = 1; }

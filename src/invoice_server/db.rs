@@ -7,7 +7,9 @@ use uuid::Uuid;
 use crate::invoice::Invoice;
 
 pub struct InvoiceStore(
+    // General store
     HashMap<Uuid, Arc<Invoice>>,
+    // Indexed by company name
     HashMap<String, HashMap<Uuid, Arc<Invoice>>>,
 );
 
