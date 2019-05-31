@@ -70,9 +70,20 @@ Currently the system accepts toml encoded invoice files. You can look at a valid
 cargo run --bin invoice -- submit -i examples/invoice.toml
 ```
 
-Since this new submission is similar to the last, you should see a warning message appear indicating that the system thinks the submission is a possible mistake. Don't worry you can try again after 15 minutes and the system will accept you submission.
+Since this new submission is similar to the last, you should see a warning message appear indicating that the system thinks the submission is a possible mistake. Don't worry you can try again after 15 minutes and the system will accept your submission.
 
-Check the current ivnoices again:
+Sometimes you want to submit the invoice anyway because it is really just a duplicate order. You can do this with the `--force` option:
+
+```
+cargo run --bin invoice -- submit -i examples/invoice.toml --force
+```
+
+You may want to get the total amount of all submitted invoices:
+
+```
+cargo run --bin invoice -- bill <COMPANY NAME>
+```
+
 
 ```
 cargo run --bin invoice -- list
@@ -85,6 +96,7 @@ Remove an invoice now:
 ```
 cargo run --bin invoice -- remove <INVOICE NUMBER>
 ```
+
 
 Listing the invoices again should reveal that the invoice has been removed.
 
