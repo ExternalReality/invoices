@@ -26,12 +26,11 @@ cargo fetch
 
 ### About the program
 
-This program consists of two services:
+This program consists of three services:
 
 * The invoice server
 * The invoice analysis server
-
-*(a third service, the 'rating server' was being developed on branch 'rating_service' and if needed will be finished.)*
+* the rating server
 
 The invoice server stores the invoices
 The invoice analysis server validates the invoices
@@ -51,6 +50,14 @@ from a different terminal emulator run:
 ```
 cargo run --bin invoice_server
 ```
+
+
+from yet a different terminal emulator run (you could always run processes in the background if you'd like):
+
+```
+cargo run --bin rating_server
+```
+
 
 now you can run the command line tool to interact with the services. Again from the project directory (in another terminal) run:
 
