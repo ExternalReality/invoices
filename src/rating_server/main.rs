@@ -4,7 +4,7 @@ use std::{io, thread};
 
 use futures::sync::oneshot;
 use futures::Future;
-use grpcio::{Environment, ServerBuilder};
+use grpcio::{ChannelBuilder, EnvBuilder, Environment, ServerBuilder};
 
 #[path = "../protos/invoice.rs"]
 mod invoice;
@@ -16,8 +16,12 @@ mod service;
 use service::RatingService;
 
 fn main() {
+    let env = Arc::new(EnvBuilder::new().build());
+    let ch = ChannelBuilder::new(env).connect("localhost:50051");
+    let invoice_client = invoice_grpc::InvoicesClient::new(ch);
+
     let env = Arc::new(Environment::new(1));
-    let service = invoice_grpc::create_rating(RatingService());
+    let service = invoice_grpc::create_rating(RatingService(invoice_client));
     let mut server = ServerBuilder::new(env)
         .register_service(service)
         .bind("127.0.0.1", 50_053)

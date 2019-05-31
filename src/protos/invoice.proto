@@ -59,4 +59,4 @@ service Rating {
 
 message RatingRequest { string company_name = 1; }
 
-message RatingReply { string bill_amount = 1; }
+message RatingReply {  sint64 bill_amount = 1; }

@@ -2660,7 +2660,7 @@ impl ::protobuf::reflect::ProtobufValue for RatingRequest {
 #[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 pub struct RatingReply {
     // message fields
-    pub bill_amount: ::std::string::String,
+    pub bill_amount: i64,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
@@ -2679,30 +2679,19 @@ impl RatingReply {
         ::std::default::Default::default()
     }
 
-    // string bill_amount = 1;
+    // sint64 bill_amount = 1;
 
 
-    pub fn get_bill_amount(&self) -> &str {
-        &self.bill_amount
+    pub fn get_bill_amount(&self) -> i64 {
+        self.bill_amount
     }
     pub fn clear_bill_amount(&mut self) {
-        self.bill_amount.clear();
+        self.bill_amount = 0;
     }
 
     // Param is passed by value, moved
-    pub fn set_bill_amount(&mut self, v: ::std::string::String) {
+    pub fn set_bill_amount(&mut self, v: i64) {
         self.bill_amount = v;
-    }
-
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_bill_amount(&mut self) -> &mut ::std::string::String {
-        &mut self.bill_amount
-    }
-
-    // Take field
-    pub fn take_bill_amount(&mut self) -> ::std::string::String {
-        ::std::mem::replace(&mut self.bill_amount, ::std::string::String::new())
     }
 }
 
@@ -2716,7 +2705,11 @@ impl ::protobuf::Message for RatingReply {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.bill_amount)?;
+                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    let tmp = is.read_sint64()?;
+                    self.bill_amount = tmp;
                 },
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -2730,8 +2723,8 @@ impl ::protobuf::Message for RatingReply {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
-        if !self.bill_amount.is_empty() {
-            my_size += ::protobuf::rt::string_size(1, &self.bill_amount);
+        if self.bill_amount != 0 {
+            my_size += ::protobuf::rt::value_varint_zigzag_size(1, self.bill_amount);
         }
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
@@ -2739,8 +2732,8 @@ impl ::protobuf::Message for RatingReply {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        if !self.bill_amount.is_empty() {
-            os.write_string(1, &self.bill_amount)?;
+        if self.bill_amount != 0 {
+            os.write_sint64(1, self.bill_amount)?;
         }
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
@@ -2784,7 +2777,7 @@ impl ::protobuf::Message for RatingReply {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeSint64>(
                     "bill_amount",
                     |m: &RatingReply| { &m.bill_amount },
                     |m: &mut RatingReply| { &mut m.bill_amount },
@@ -2811,7 +2804,7 @@ impl ::protobuf::Message for RatingReply {
 
 impl ::protobuf::Clear for RatingReply {
     fn clear(&mut self) {
-        self.bill_amount.clear();
+        self.bill_amount = 0;
         self.unknown_fields.clear();
     }
 }
@@ -2852,14 +2845,14 @@ static file_descriptor_proto_data: &'static [u8] = b"\
     ResultR\x06result\"\x1f\n\x06Result\x12\x06\n\x02OK\x10\0\x12\r\n\tDUPLI\
     CATE\x10\x01\"2\n\rRatingRequest\x12!\n\x0ccompany_name\x18\x01\x20\x01(\
     \tR\x0bcompanyName\".\n\x0bRatingReply\x12\x1f\n\x0bbill_amount\x18\x01\
-    \x20\x01(\tR\nbillAmount2\xdf\x01\n\x08Invoices\x126\n\x06Create\x12\x15\
-    .CreateInvoiceRequest\x1a\x13.CreateInvoiceReply\"\0\x120\n\x04List\x12\
-    \x13.ListInvoiceRequest\x1a\x11.ListInvoiceReply\"\0\x126\n\x06Remove\
-    \x12\x15.RemoveInvoiceRequest\x1a\x13.RemoveInvoiceReply\"\0\x121\n\tByC\
-    ompany\x12\x11.ByCompanyRequest\x1a\x0f.ByCompanyReply\"\02O\n\x08Analys\
-    is\x12C\n\x0fDetectDuplicate\x12\x17.DetectDuplicateRequest\x1a\x15.Dete\
-    ctDuplicateReply\"\028\n\x06Rating\x12.\n\x0cGenerateBill\x12\x0e.Rating\
-    Request\x1a\x0c.RatingReply\"\0b\x06proto3\
+    \x20\x01(\x12R\nbillAmount2\xdf\x01\n\x08Invoices\x126\n\x06Create\x12\
+    \x15.CreateInvoiceRequest\x1a\x13.CreateInvoiceReply\"\0\x120\n\x04List\
+    \x12\x13.ListInvoiceRequest\x1a\x11.ListInvoiceReply\"\0\x126\n\x06Remov\
+    e\x12\x15.RemoveInvoiceRequest\x1a\x13.RemoveInvoiceReply\"\0\x121\n\tBy\
+    Company\x12\x11.ByCompanyRequest\x1a\x0f.ByCompanyReply\"\02O\n\x08Analy\
+    sis\x12C\n\x0fDetectDuplicate\x12\x17.DetectDuplicateRequest\x1a\x15.Det\
+    ectDuplicateReply\"\028\n\x06Rating\x12.\n\x0cGenerateBill\x12\x0e.Ratin\
+    gRequest\x1a\x0c.RatingReply\"\0b\x06proto3\
 ";
 
 static mut file_descriptor_proto_lazy: ::protobuf::lazy::Lazy<::protobuf::descriptor::FileDescriptorProto> = ::protobuf::lazy::Lazy {
