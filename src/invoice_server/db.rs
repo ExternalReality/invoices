@@ -45,8 +45,8 @@ impl Database {
         let mut db = self.0.write().unwrap();
         let inv = db.0.remove(&key)?;
         db.1.get_mut(&inv.company_name)
-            .map(|v| v.get_mut(&key))
-            .map(|_| invoice_number)
+            .and_then(|v| v.remove(&key))?;
+        Some(invoice_number)
     }
 
     #[allow(dead_code)]
@@ -134,5 +134,16 @@ mod tests {
     fn read_missing_company() {
         let mut db = Database::new();
         assert_eq!(db.read_by_company("Not There"), vec![]);
+    }
+
+    #[test]
+    fn remove_from_company() {
+        let mut db = Database::new();
+        let mut inv1 = invoice::Invoice::new();
+        let key = "Company";
+        inv1.set_company_name(String::from(key));
+        let invoice_number = db.create(&inv1);
+        db.remove(&invoice_number);
+        assert_eq!(db.read_by_company(key), vec![]);
     }
 }
