@@ -1,0 +1,11 @@
+[package]
+name = "analysis_server"
+version = "0.1.0"
+authors = ["externalreality <ecjones@protonmail.com>"]
+edition = "2018"
+
+[dependencies]
+grpcio = "0.4.4"
+protobuf = "2.6.1"
+futures = "0.1.27"
+serde = "1.0"

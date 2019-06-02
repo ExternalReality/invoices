@@ -4,6 +4,9 @@ version = "0.1.0"
 authors = ["externalreality <ecjones@protonmail.com>"]
 edition = "2018"
 
+[workspace]
+members = ["analysis_server",]
+
 [dependencies]
 uuid = {version = "0.7.4", features = ["v4"]} 
 grpcio = "0.4.4"
@@ -31,10 +34,6 @@ path = "src/invoice_server/main.rs"
 [[bin]]
 name = "invoice"
 path = "src/invoice_app/main.rs"
-
-[[bin]]
-name = "analysis_server"
-path = "src/analysis_server/main.rs"
 
 [[bin]]
 name = "rating_server"
