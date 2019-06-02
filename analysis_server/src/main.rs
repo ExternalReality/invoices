@@ -9,10 +9,10 @@ use grpcio::{Environment, RpcContext, ServerBuilder, UnarySink};
 
 mod db;
 
-#[path = "../protos/invoice_grpc.rs"]
+#[path = "../../src/protos/invoice_grpc.rs"]
 mod invoice_grpc;
 
-#[path = "../protos/invoice.rs"]
+#[path = "../../src/protos/invoice.rs"]
 mod invoice;
 
 mod service;
