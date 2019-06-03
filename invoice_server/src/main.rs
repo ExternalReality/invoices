@@ -8,10 +8,10 @@ use grpcio::{Environment, ServerBuilder};
 
 mod db;
 
-#[path = "../protos/invoice.rs"]
+#[path = "../../src/protos/invoice.rs"]
 mod invoice;
 
-#[path = "../protos/invoice_grpc.rs"]
+#[path = "../../src/protos/invoice_grpc.rs"]
 mod invoice_grpc;
 
 mod service;

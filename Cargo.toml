@@ -7,6 +7,7 @@ edition = "2018"
 [workspace]
 members = [
         "analysis_server",
+        "invoice_server",
 ]
 
 [dependencies]
@@ -28,10 +29,6 @@ protobuf-codegen = "2.6.1"
 [dev-dependencies]
 assert_cmd = "0.11.1"
 predicates = "1"
-
-[[bin]]
-name = "invoice_server"
-path = "src/invoice_server/main.rs"
 
 [[bin]]
 name = "invoice"
