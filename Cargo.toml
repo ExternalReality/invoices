@@ -8,6 +8,7 @@ edition = "2018"
 members = [
         "analysis_server",
         "invoice_server",
+        "rating_server",
 ]
 
 [dependencies]
@@ -33,10 +34,6 @@ predicates = "1"
 [[bin]]
 name = "invoice"
 path = "src/invoice_app/main.rs"
-
-[[bin]]
-name = "rating_server"
-path = "src/rating_server/main.rs"
 
 [features]
 default = ["with-serde"]

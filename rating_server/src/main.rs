@@ -6,10 +6,10 @@ use futures::sync::oneshot;
 use futures::Future;
 use grpcio::{ChannelBuilder, EnvBuilder, Environment, ServerBuilder};
 
-#[path = "../protos/invoice.rs"]
+#[path = "../../src/protos/invoice.rs"]
 mod invoice;
 
-#[path = "../protos/invoice_grpc.rs"]
+#[path = "../../src/protos/invoice_grpc.rs"]
 mod invoice_grpc;
 
 mod service;

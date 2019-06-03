@@ -1086,6 +1086,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "rating_server"
+version = "0.1.0"
+dependencies = [
+ "futures 0.1.27 (registry+https://github.com/rust-lang/crates.io-index)",
+ "grpcio 0.4.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "protobuf 2.6.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "serde 1.0.91 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
 name = "rdrand"
 version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
