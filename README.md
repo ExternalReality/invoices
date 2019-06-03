@@ -62,19 +62,19 @@ cargo run -p rating_server
 now you can run the command line tool to interact with the services. Again from the project directory (in another terminal) run:
 
 ```
-cargo run --bin invoice -- list
+cargo run -p invoice -- list
 ```
 
 You should see there are no invoices available (and empty list of invoice numbers).
 
 ```
-cargo run --bin invoice -- submit -i examples/invoice.toml
+cargo run -p invoice -- submit -i examples/invoice.toml
 ```
 
 Currently the system accepts toml encoded invoice files. You can look at a valid invoice in the `examples` directory. Try to submit the same invoice again.
 
 ```
-cargo run --bin invoice -- submit -i examples/invoice.toml
+cargo run -p invoice -- submit -i examples/invoice.toml
 ```
 
 Since this new submission is similar to the last, you should see a warning message appear indicating that the system thinks the submission is a possible mistake. Don't worry you can try again after 15 minutes and the system will accept your submission.
@@ -82,18 +82,18 @@ Since this new submission is similar to the last, you should see a warning messa
 Sometimes you want to submit the invoice anyway because it is really just a duplicate order. You can do this with the `--force` option:
 
 ```
-cargo run --bin invoice -- submit -i examples/invoice.toml --force
+cargo run -p invoice -- submit -i examples/invoice.toml --force
 ```
 
 You may want to get the total amount of all submitted invoices:
 
 ```
-cargo run --bin invoice -- bill <COMPANY NAME>
+cargo run -p invoice -- bill <COMPANY NAME>
 ```
 
 
 ```
-cargo run --bin invoice -- list
+cargo run -p invoice -- list
 ```
 
 You should see invoice numbers for all your invoices.
@@ -101,7 +101,7 @@ You should see invoice numbers for all your invoices.
 Remove an invoice now:
 
 ```
-cargo run --bin invoice -- remove <INVOICE NUMBER>
+cargo run -p invoice -- remove <INVOICE NUMBER>
 ```
 
 

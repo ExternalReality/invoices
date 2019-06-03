@@ -7,13 +7,9 @@ use futures::sync::oneshot;
 use futures::Future;
 use grpcio::{Environment, RpcContext, ServerBuilder, UnarySink};
 
+use grpc_protocol::{invoice, invoice_grpc};
+
 mod db;
-
-#[path = "../../src/protos/invoice_grpc.rs"]
-mod invoice_grpc;
-
-#[path = "../../src/protos/invoice.rs"]
-mod invoice;
 
 mod service;
 use service::AnalysisService;

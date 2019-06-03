@@ -8,13 +8,11 @@ use clap::App;
 use grpcio::{ChannelBuilder, EnvBuilder};
 use toml;
 
-#[path = "../protos/invoice_grpc.rs"]
-mod invoice_grpc;
-use invoice_grpc::{AnalysisClient, InvoicesClient, RatingClient};
-
-#[path = "../protos/invoice.rs"]
-mod invoice;
-use invoice::DetectDuplicateReply_Result;
+use grpc_protocol::invoice::{
+    CreateInvoiceRequest, DetectDuplicateReply_Result, DetectDuplicateRequest, Invoice,
+    ListInvoiceRequest, RatingRequest, RemoveInvoiceRequest,
+};
+use grpc_protocol::invoice_grpc::{AnalysisClient, InvoicesClient, RatingClient};
 
 fn main() {
     let yaml = load_yaml!("cli.yml");
@@ -22,15 +20,15 @@ fn main() {
 
     let env = Arc::new(EnvBuilder::new().build());
     let ch = ChannelBuilder::new(env).connect("localhost:50051");
-    let invoice_client = invoice_grpc::InvoicesClient::new(ch);
+    let invoice_client = InvoicesClient::new(ch);
 
     let env = Arc::new(EnvBuilder::new().build());
     let ch = ChannelBuilder::new(env).connect("localhost:50052");
-    let analysis_client = invoice_grpc::AnalysisClient::new(ch);
+    let analysis_client = AnalysisClient::new(ch);
 
     let env = Arc::new(EnvBuilder::new().build());
     let ch = ChannelBuilder::new(env).connect("localhost:50053");
-    let rating_client = invoice_grpc::RatingClient::new(ch);
+    let rating_client = RatingClient::new(ch);
 
     match matches.subcommand() {
         ("submit", Some(sc)) => handle_submit(sc, invoice_client, analysis_client),
@@ -44,10 +42,10 @@ fn main() {
 fn handle_submit(sc: &clap::ArgMatches<'_>, inc: InvoicesClient, anc: AnalysisClient) {
     let filename = sc.value_of("input").unwrap();
     let contents = fs::read_to_string(filename).expect("Something went wrong reading the file");
-    let inv: invoice::Invoice = toml::from_str(&contents).unwrap();
+    let inv: Invoice = toml::from_str(&contents).unwrap();
 
     if !sc.is_present("force") {
-        let mut req = invoice::DetectDuplicateRequest::new();
+        let mut req = DetectDuplicateRequest::new();
         req.set_invoice(inv.clone());
         let res = anc.detect_duplicate(&req).unwrap();
         match res.result {
@@ -64,20 +62,20 @@ Use the '--force' option to submit anyway.\n";
         }
     }
 
-    let mut req = invoice::CreateInvoiceRequest::new();
+    let mut req = CreateInvoiceRequest::new();
     req.set_invoice(inv);
     let res = inc.create(&req).unwrap();
     println!("invoice number: {}", res.invoice_number);
 }
 
 fn handle_list(_: &clap::ArgMatches<'_>, client: InvoicesClient) {
-    let req = invoice::ListInvoiceRequest::new();
+    let req = ListInvoiceRequest::new();
     let res = client.list(&req).unwrap();
     println!("invoice numbers: {:?}", res.invoice_numbers.into_vec());
 }
 
 fn handle_remove(sc: &clap::ArgMatches<'_>, client: InvoicesClient) {
-    let mut req = invoice::RemoveInvoiceRequest::new();
+    let mut req = RemoveInvoiceRequest::new();
     let invoice_number = sc.value_of("invoice").unwrap();
     req.set_invoice_number(invoice_number.to_string());
     let res = client.remove(&req).unwrap();
@@ -85,7 +83,7 @@ fn handle_remove(sc: &clap::ArgMatches<'_>, client: InvoicesClient) {
 }
 
 fn handle_bill(sc: &clap::ArgMatches<'_>, client: RatingClient) {
-    let mut req = invoice::RatingRequest::new();
+    let mut req = RatingRequest::new();
     let company_name = sc.value_of("company").unwrap();
     req.set_company_name(company_name.to_string());
     let rep = client.generate_bill(&req).unwrap();

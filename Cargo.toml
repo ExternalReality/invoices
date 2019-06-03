@@ -1,40 +1,8 @@
-[package]
-name = "invoice"
-version = "0.1.0"
-authors = ["externalreality <ecjones@protonmail.com>"]
-edition = "2018"
-
 [workspace]
 members = [
         "analysis_server",
         "invoice_server",
         "rating_server",
+        "invoice_cli",
+        "grpc_protocol",
 ]
-
-[dependencies]
-uuid = {version = "0.7.4", features = ["v4"]} 
-grpcio = "0.4.4"
-protobuf = "2.6.1"
-futures = "0.1.27"
-gotham = "0.3.0"
-hyper = "0.12"
-mime = "0.3"
-clap = {version = "2.33", features = ["yaml"]}
-toml = "0.5"
-serde = { version = "1.0", features = ["derive"] }
-
-[build-dependencies]
-protoc-grpcio = "1.0.2"
-protobuf-codegen = "2.6.1"
-
-[dev-dependencies]
-assert_cmd = "0.11.1"
-predicates = "1"
-
-[[bin]]
-name = "invoice"
-path = "src/invoice_app/main.rs"
-
-[features]
-default = ["with-serde"]
-with-serde = ["protobuf/with-serde"]

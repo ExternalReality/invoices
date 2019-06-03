@@ -6,11 +6,7 @@ use futures::sync::oneshot;
 use futures::Future;
 use grpcio::{ChannelBuilder, EnvBuilder, Environment, ServerBuilder};
 
-#[path = "../../src/protos/invoice.rs"]
-mod invoice;
-
-#[path = "../../src/protos/invoice_grpc.rs"]
-mod invoice_grpc;
+use grpc_protocol::{invoice, invoice_grpc};
 
 mod service;
 use service::RatingService;
