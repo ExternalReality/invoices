@@ -42,20 +42,20 @@ currently the invoice analysis server only checks to see if a submitted invoice 
 To try the program you must first start both services. An easy way to do this is, from the project directory, run the following commands:
 
 ```
-cargo run --bin analysis_server
+cargo run -p analysis_server
 ```
 
 from a different terminal emulator run:
 
 ```
-cargo run --bin invoice_server
+cargo run -p invoice_server
 ```
 
 
 from yet a different terminal emulator run (you could always run processes in the background if you'd like):
 
 ```
-cargo run --bin rating_server
+cargo run -p rating_server
 ```
 
 
