@@ -114,4 +114,4 @@ This is a learning project so no proper error handling on logging is done.
 
 ### Tests
 
-You can run the tests with `cargo test`
+You can run the tests with `cargo test --all`
