@@ -6,6 +6,7 @@ rust-latest:
   image: rust:latest
   before_script:
     - apt-get update --yes
+    - apt-get install --yes binutils
     - apt-get install --yes cmake
   script:
     - cargo build --verbose
@@ -16,6 +17,7 @@ rust-nightly:
   image: rustlang/rust:nightly
   before_script:
     - apt-get update --yes
+    - apt-get install --yes binutils
     - apt-get install --yes cmake
   script:
     - cargo build --verbose
