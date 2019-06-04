@@ -8,6 +8,7 @@ rust-latest:
     - apt-get update --yes
     - apt-get install --yes binutils
     - apt-get install --yes cmake
+    - sudo apt install --yes golang-1.8-go
   script:
     - cargo build --verbose
     - cargo test --all --verbose
