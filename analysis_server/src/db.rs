@@ -64,6 +64,11 @@ mod tests {
     use super::super::invoice;
     use super::{DetectDuplicateReply_Result, DetectDuplicateStore, Duration};
 
+    extern crate quickcheck;
+
+    use super::*;
+    use quickcheck::{Arbitrary, Gen, QuickCheck, TestResult};
+
     #[test]
     fn detect_no_duplicate() {
         let mut db = DetectDuplicateStore::new(Duration::new(0, 0));
@@ -81,7 +86,7 @@ mod tests {
         assert_eq!(res, DetectDuplicateReply_Result::DUPLICATE);
     }
 
-    // The following test relies on real time and thus is more likely to be fail
+    // The following test relies on real time and thus is more likely to fail
     // non-deterministicly.
     #[test]
     fn detect_no_duplicate_after_expire() {

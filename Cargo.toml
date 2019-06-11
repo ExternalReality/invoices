@@ -5,4 +5,5 @@ members = [
         "rating_server",
         "invoice_cli",
         "grpc_protocol",
+        "invoice_web",
 ]
