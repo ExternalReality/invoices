@@ -66,8 +66,8 @@ mod tests {
 
     extern crate quickcheck;
 
-    use super::*;
-    use quickcheck::{Arbitrary, Gen, QuickCheck, TestResult};
+    
+    
 
     #[test]
     fn detect_no_duplicate() {
