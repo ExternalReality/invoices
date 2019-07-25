@@ -11,7 +11,7 @@ jobs:
           command: cargo build -p grpc_protocol
 
       - persist_to_workspace:
-          root: ./invoices/invoice_grpc
+          root: ./grpc_protocol
           paths:
             - src
 
