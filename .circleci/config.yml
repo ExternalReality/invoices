@@ -1,0 +1,22 @@
+version: 2.1
+jobs:
+  grpc_protocol:
+    docker:
+      - image: externalreality/invoices-build-image
+    steps:
+      - checkout
+
+      - run:
+          name: Build GPRC Protobuf Protocols
+          command: cargo build -p grpc_protocol
+
+      - persist_to_workspace:
+          root: ./invoice_grpc
+          paths:
+            - src
+
+workflows:
+  version: 2.1
+  build:
+    jobs:
+      - grpc_protocol
