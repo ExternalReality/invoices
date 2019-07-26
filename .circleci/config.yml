@@ -9,11 +9,11 @@ jobs:
       - run:
           name: Build GPRC Protobuf Protocols
           command: cargo build -p grpc_protocol
-
       - persist_to_workspace:
           root: ./grpc_protocol
           paths:
             - src
+      - gen-cache-key-vars
       - save_cache:
           paths:
             - /usr/local/cargo/registry
@@ -49,6 +49,13 @@ workflows:
             - grpc_protocol
 
 commands:
+  gen-cache-key-vars:
+    description: "Generate dependency key variables"
+    steps:
+      - run:
+          name: Calculate Cache Key Vars
+          command: rustc --version >rust-version
+
   build-service:
     description: "Boilerplate Rust service build config"
     parameters:
@@ -60,6 +67,7 @@ commands:
       - checkout
       - attach_workspace:
           at: ./grpc_protocol
+      - gen-cache-key-vars
       - restore_cache:
           keys:
             - v6-cargo-cache-{{arch}}-{{checksum "rust-version"}}-{{checksum "Cargo.lock"}}
