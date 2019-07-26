@@ -5,7 +5,6 @@ jobs:
       - image: externalreality/invoices-build-image
     steps:
       - checkout
-
       - run:
           name: Build GPRC Protobuf Protocols
           command: cargo build -p grpc_protocol
@@ -26,7 +25,7 @@ jobs:
     steps:
       - build-service:
           display_name: Analysis Server
-          package_name: analsysis_server
+          package_name: analysis_server
 
   invoice_server:
     docker:
@@ -50,7 +49,7 @@ workflows:
 
 commands:
   gen-cache-key-vars:
-    description: "Generate dependency key variables"
+    description: "Generate cache key files"
     steps:
       - run:
           name: Calculate Cache Key Vars
