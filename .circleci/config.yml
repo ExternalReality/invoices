@@ -35,6 +35,14 @@ jobs:
           display_name: Invoice Server
           package_name: invoice_server
 
+  rating_server:
+    docker:
+      - image: externalreality/invoices-build-image
+    steps:
+      - build-service:
+          display_name: Rating Server
+          package_name: rating_server
+
 workflows:
   version: 2.1
   build:
@@ -44,6 +52,9 @@ workflows:
           requires:
             - grpc_protocol
       - invoice_server:
+          requires:
+            - grpc_protocol
+      - rating_server:
           requires:
             - grpc_protocol
 
