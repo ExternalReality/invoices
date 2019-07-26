@@ -14,19 +14,19 @@ jobs:
           root: ./grpc_protocol
           paths:
             - src
+      - save_cache:
+          paths:
+            - /usr/local/cargo/registry
+            - target
+          key: v6-cargo-cache-{{arch}}-{{checksum "rust-version"}}-{{checksum "Cargo.lock"}}
 
   analysis_server:
     docker:
       - image: externalreality/invoices-build-image
     steps:
-      - checkout
-
-      - attach_workspace:
-          at: ./grpc_protocol
-
-      - run:
-          name: Build Analysis Server
-          command: cargo build -p analysis_server
+      - build-service:
+          display_name: Analysis Server
+          package_name: analsysis_server
 
   invoice_server:
     docker:
@@ -37,7 +37,7 @@ jobs:
           package_name: invoice_server
 
 workflows:
-  version: 2
+  version: 2.1
   build:
     jobs:
       - grpc_protocol
@@ -50,7 +50,7 @@ workflows:
 
 commands:
   build-service:
-    description: "Boilerplate rust service build config"
+    description: "Boilerplate Rust service build config"
     parameters:
       display_name:
         type: string
@@ -60,6 +60,14 @@ commands:
       - checkout
       - attach_workspace:
           at: ./grpc_protocol
+      - restore_cache:
+          keys:
+            - v6-cargo-cache-{{arch}}-{{checksum "rust-version"}}-{{checksum "Cargo.lock"}}
       - run:
           name: Build << parameters.display_name >>
           command: cargo build -p << parameters.package_name >>
+      - save_cache:
+          paths:
+            - /usr/local/cargo/registry
+            - target
+          key: v6-cargo-cache-{{arch}}-{{checksum "rust-version"}}-{{checksum "Cargo.lock"}}
