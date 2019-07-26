@@ -28,6 +28,14 @@ jobs:
           name: Build Analysis Server
           command: cargo build -p analysis_server
 
+  invoice_server:
+    docker:
+      - image: externalreality/invoices-build-image
+    steps:
+      - build-service:
+          display_name: Invoice Server
+          package_name: invoice_server
+
 workflows:
   version: 2
   build:
@@ -36,3 +44,22 @@ workflows:
       - analysis_server:
           requires:
             - grpc_protocol
+      - invoice_server:
+          requires:
+            - grpc_protocol
+
+commands:
+  build-service:
+    description: "Boilerplate rust service build config"
+    parameters:
+      display_name:
+        type: string
+      package_name:
+        type: string
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ./grpc_protocol
+      - run:
+          name: Build << parameters.display_name >>
+          command: cargo build -p << parameters.package_name >>
