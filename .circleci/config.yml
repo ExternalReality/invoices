@@ -17,7 +17,7 @@ jobs:
 
   analysis_server:
     docker:
-      - image: circleci/rust:1.36.0
+      - image: externalreality/invoices-build-image
     steps:
       - checkout
 
