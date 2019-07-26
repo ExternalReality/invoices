@@ -14,6 +14,7 @@ jobs:
           root: ./grpc_protocol
           paths:
             - src
+
   analysis_server:
     docker:
       - image: circleci/rust:1.36.0
@@ -21,14 +22,14 @@ jobs:
       - checkout
 
       - attach_workspace:
-          - at: ./grpc_protocol
+          at: ./grpc_protocol
 
       - run:
-        name: Build Analysis Server
-        command: cargo build -p analysis_server
+          name: Build Analysis Server
+          command: cargo build -p analysis_server
 
 workflows:
-  version: 2.1
+  version: 2
   build:
     jobs:
       - grpc_protocol
