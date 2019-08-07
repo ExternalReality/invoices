@@ -124,22 +124,26 @@ workflows:
             - analysis_server
             - invoice_server
             - rating_server
-            - invoice_cli
+            - invoice_cli            
       - acceptance_tests:
           requires:
             - integration_tests
+      - request_deploy:
+          type: approval
+          requires:
+            - acceptance_tests
       - deploy_ms_store:
           requires:
-            - acceptance_tests
+            - request_deploy
       - deploy_debian:
           requires:
-            - acceptance_tests
+            - request_deploy
       - deploy_rpm:
           requires:
-            - acceptance_tests
+            - request_deploy
       - deploy_apple_store:
           requires:
-            - acceptance_tests
+            - request_deploy
 commands:
   gen-cache-key-vars:
     description: "Generate cache key files"
