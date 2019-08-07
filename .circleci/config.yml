@@ -60,6 +60,13 @@ jobs:
     executor: debian-rabbitmq
     steps:
       - run:
+          name: Test Service Integrations
+          command: echo "Service TESTS PASSED"
+
+  acceptance_tests:
+    executor: debian-rabbitmq
+    steps:
+      - run:
           name: Test CLI
           command: echo "CLI TESTS PASSED"
 
@@ -86,6 +93,9 @@ workflows:
             - invoice_server
             - rating_server
             - invoice_cli
+      - acceptance_tests:
+          requires:
+            - integration_tests
 
 commands:
   gen-cache-key-vars:
