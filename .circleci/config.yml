@@ -3,6 +3,12 @@ executors:
   rust-grpc-protoc:
     docker:
       - image: externalreality/invoices-build-image
+  debian-rabbitmq:
+    docker:
+      # base image to run services
+      - image: debian
+      # rabbitmq message broker
+      - image: rabbitmq-alpine
 jobs:
   grpc_protocol:
     executor: rust-grpc-protoc
@@ -51,7 +57,7 @@ jobs:
           package_name: invoice_cli
   
   integration_tests:
-    executor: rust-grpc-protoc
+    executor: debian-rabbitmq
     steps:
       - run:
           name: Test CLI
