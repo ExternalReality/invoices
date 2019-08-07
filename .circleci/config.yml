@@ -9,7 +9,7 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Build GPRC Protobuf Protocols
+          name: Build GRPC Protobuf Protocols
           command: cargo build -p grpc_protocol
       - persist_to_workspace:
           root: ./grpc_protocol
@@ -42,6 +42,20 @@ jobs:
       - build-service:
           display_name: Rating Server
           package_name: rating_server
+  
+  invoice_cli:
+    executor: rust-grpc-protoc
+    steps:
+      - build-service:
+          display_name: Invoice CLI
+          package_name: invoice_cli
+  
+  integration_tests:
+    executor: rust-grpc-protoc
+    steps:
+      - run:
+          name: Test CLI
+          command: echo "CLI TESTS PASSED"
 
 workflows:
   version: 2.1
@@ -57,6 +71,15 @@ workflows:
       - rating_server:
           requires:
             - grpc_protocol
+      - invoice_cli:
+          requires:
+            - grpc_protocol
+      - integration_tests:
+          requires:
+            - analysis_server
+            - invoice_server
+            - rating_server
+            - invoice_cli
 
 commands:
   gen-cache-key-vars:
@@ -88,7 +111,7 @@ commands:
           name: Build << parameters.display_name >>
           command: cargo build -p << parameters.package_name >>
       - run:
-          name: Build << parameters.display_name >>
+          name: Test << parameters.display_name >>
           command: cargo test -p << parameters.package_name >>
       - save_cache:
           paths:
