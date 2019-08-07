@@ -69,6 +69,38 @@ jobs:
       - run:
           name: Test CLI
           command: echo "CLI TESTS PASSED"
+  
+  deploy_ms_store:
+    machine:
+      enabled: true
+    steps:
+      - run:
+          name: Deploy to MS Store
+          command: echo "Deploy"
+     
+  deploy_debian:
+    machine:
+      enabled: true
+    steps:
+      - run:
+          name: Deploy to MS Store
+          command: echo "Deploy"
+    
+  deploy_rpm:
+    machine:
+      enabled: true
+    steps:
+      - run:
+          name: Deploy to MS Store
+          command: echo "Deploy"
+  
+  deploy_apple_store:
+    machine:
+      enabled: true
+    steps:
+      - run:
+          name: Deploy to MS Store
+          command: echo "Deploy"
 
 workflows:
   version: 2.1
@@ -96,7 +128,18 @@ workflows:
       - acceptance_tests:
           requires:
             - integration_tests
-
+      - deploy_ms_store:
+          requires:
+            - acceptance_tests
+      - deploy_debian:
+          requires:
+            - acceptance_tests
+      - deploy_rpm:
+          requires:
+            - acceptance_tests
+      - deploy_apple_store:
+          requires:
+            - acceptance_tests
 commands:
   gen-cache-key-vars:
     description: "Generate cache key files"
