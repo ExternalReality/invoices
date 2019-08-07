@@ -82,8 +82,14 @@ commands:
           keys:
             - *cargo-cache-key
       - run:
+          name: Check << parameters.display_name >>
+          command: cargo check -p << parameters.package_name >>
+      - run:
           name: Build << parameters.display_name >>
           command: cargo build -p << parameters.package_name >>
+      - run:
+          name: Build << parameters.display_name >>
+          command: cargo test -p << parameters.package_name >>
       - save_cache:
           paths:
             - /usr/local/cargo/registry
