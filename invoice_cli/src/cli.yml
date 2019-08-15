@@ -15,15 +15,15 @@ subcommands:
         about: List stored invoice numbers
         version: "0.1"
         long: list
-    - bill:
-        about: Generate monthly bill amount for a company
+    - total:
+        about: Generate monthly total amount for a company
         version: "0.1"
         long: list
         args:
           - company:
               value_name: COMPANY NAME
               required: true
-              help: The company whose bill to generate
+              help: The company whose montyly total to generate
     - submit:
         about: Submit an invoice
         version: "0.1"
