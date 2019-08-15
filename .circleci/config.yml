@@ -132,6 +132,9 @@ workflows:
           type: approval
           requires:
             - acceptance_tests
+          filters:
+            branches:
+                only: master
       - deploy_ms_store:
           requires:
             - request_deploy
