@@ -34,7 +34,7 @@ fn main() {
         ("submit", Some(sc)) => handle_submit(sc, invoice_client, analysis_client),
         ("list", Some(sc)) => handle_list(sc, invoice_client),
         ("remove", Some(sc)) => handle_remove(sc, invoice_client),
-        ("bill", Some(sc)) => handle_bill(sc, rating_client),
+        ("total", Some(sc)) => handle_bill(sc, rating_client),
         _ => {}
     }
 }
