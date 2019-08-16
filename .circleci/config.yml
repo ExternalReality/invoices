@@ -103,7 +103,7 @@ jobs:
           command: echo "Deploy"
 
 workflows:
-  version: 2.1
+  version: 2
   build:
     jobs:
       - grpc_protocol
