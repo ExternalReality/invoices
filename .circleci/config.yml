@@ -15,7 +15,7 @@ jobs:
           name: Get Git
           command: apt update && apt install git -yy
       - multirepo/run-job-for-paths:
-          paths: project/grpc_protocol
+          paths: grpc_protocol
       - run:
           name: Build GRPC Protobuf Protocols
           command: cargo build -p grpc_protocol
@@ -38,7 +38,7 @@ jobs:
           name: Get Git
           command: apt update && apt install git -yy
       - multirepo/run-job-for-paths:
-          paths: project/grpc_protocol project/analysis_server
+          paths: grpc_protocol analysis_server
       - build-service:
           display_name: Analysis Server
           package_name: analysis_server
