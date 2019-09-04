@@ -1,19 +1,21 @@
-version: 2
+version: 2.1
+orbs:
+   multirepo: dnephin/multirepo@0.0.7
 executors:
   rust-grpc-protoc:
     docker:
       - image: externalreality/invoices-build-image
-  debian-rabbitmq:
-    docker:
-      # base image to run services
-      - image: debian
-      # rabbitmq message broker
-      - image: rabbitmq:3.7-alpine
+
 jobs:
   grpc_protocol:
     executor: rust-grpc-protoc
     steps:
       - checkout
+      - run:
+          name: Get Git
+          command: apt update && apt install git -yy
+      - multirepo/run-job-for-paths:
+          paths: "project/grpc_protocol"
       - run:
           name: Build GRPC Protobuf Protocols
           command: cargo build -p grpc_protocol
@@ -31,6 +33,12 @@ jobs:
   analysis_server:
     executor: rust-grpc-protoc
     steps:
+      - checkout
+      - run:
+          name: Get Git
+          command: apt update && apt install git -yy
+      - multirepo/run-job-for-paths:
+          paths: project/grpc_protocol project/analysis_server
       - build-service:
           display_name: Analysis Server
           package_name: analysis_server
@@ -38,6 +46,7 @@ jobs:
   invoice_server:
     executor: rust-grpc-protoc
     steps:
+      - checkout
       - build-service:
           display_name: Invoice Server
           package_name: invoice_server
@@ -45,62 +54,18 @@ jobs:
   rating_server:
     executor: rust-grpc-protoc
     steps:
+      - checkout
       - build-service:
           display_name: Rating Server
           package_name: rating_server
-  
+
   invoice_cli:
     executor: rust-grpc-protoc
     steps:
+      - checkout
       - build-service:
           display_name: Invoice CLI
           package_name: invoice_cli
-  
-  integration_tests:
-    executor: debian-rabbitmq
-    steps:
-      - run:
-          name: Test Service Integrations
-          command: echo "Service TESTS PASSED"
-
-  acceptance_tests:
-    executor: debian-rabbitmq
-    steps:
-      - run:
-          name: Test CLI
-          command: echo "CLI TESTS PASSED"
-  
-  deploy_ms_store:
-    machine:
-      enabled: true
-    steps:
-      - run:
-          name: Deploy to MS Store
-          command: echo "Deploy"
-     
-  deploy_debian:
-    machine:
-      enabled: true
-    steps:
-      - run:
-          name: Deploy to MS Store
-          command: echo "Deploy"
-    
-  deploy_rpm:
-    machine:
-      enabled: true
-    steps:
-      - run:
-          name: Deploy to MS Store
-          command: if [ $(($RANDOM % 2)) -lt 1 ]; then exit 1; else exit 0; fi
-  
-  deploy_apple_store:
-    machine:
-      enabled: true
-    steps:
-      - run:
-          name: Deploy to MS Store
-          command: echo "Deploy"
 
 workflows:
   version: 2
@@ -119,34 +84,7 @@ workflows:
       - invoice_cli:
           requires:
             - grpc_protocol
-      - integration_tests:
-          requires:
-            - analysis_server
-            - invoice_server
-            - rating_server
-            - invoice_cli            
-      - acceptance_tests:
-          requires:
-            - integration_tests
-      - request_deploy:
-          type: approval
-          requires:
-            - acceptance_tests
-          filters:
-            branches:
-                only: master
-      - deploy_ms_store:
-          requires:
-            - request_deploy
-      - deploy_debian:
-          requires:
-            - request_deploy
-      - deploy_rpm:
-          requires:
-            - request_deploy
-      - deploy_apple_store:
-          requires:
-            - request_deploy
+
 commands:
   gen-cache-key-vars:
     description: "Generate cache key files"
@@ -163,7 +101,6 @@ commands:
       package_name:
         type: string
     steps:
-      - checkout
       - attach_workspace:
           at: ./grpc_protocol
       - gen-cache-key-vars
