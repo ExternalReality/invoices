@@ -8,10 +8,6 @@ blocks:
   - name: 'Block #1'
     task:
       jobs:
-        - name: get git
-          commands:
-            - apt update
-            - apt install git -yy
         - name: 'Job #2'
           commands:
             - cargo build -p grpc-protocol
@@ -22,3 +18,7 @@ blocks:
         containers:
           - name: main
             image: externalreality/invoices-build-image
+      prologue:
+        commands:
+          - apt update
+          - apt install git -yy
