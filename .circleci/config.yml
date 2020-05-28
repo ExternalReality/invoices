@@ -101,7 +101,19 @@ commands:
           name: Start collecting resource usage samples
           command: while true; do .circleci/container_resource_usage.sh; done >> usage.dat
           background: true
-  
+
+  upload-resource-usage-plot:
+    description: "upload a plot of the resource usage collected with the plot-resource usage command."
+    steps:
+        - run:
+            name: Ensure plotting program is installed
+            command: apt install gnuplot -yy
+        - run:
+            name: Generate plot
+            command: .circleci/usage-plot.gp usage.dat plot.png
+        - store_artifacts:
+            path: plot.png
+
   build-service:
     description: "Boilerplate Rust service build config"
     parameters:
