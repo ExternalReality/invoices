@@ -38,8 +38,8 @@ jobs:
       - run:
           name: Get Git
           command: apt update && apt install git -yy
-      - multirepo/run-job-for-paths:
-          paths: project/grpc_protocol project/analysis_server
+      # - multirepo/run-job-for-paths:
+      #     paths: project/grpc_protocol project/analysis_server
       - build-service:
           display_name: Analysis Server
           package_name: analysis_server
