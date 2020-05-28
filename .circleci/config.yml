@@ -76,6 +76,8 @@ workflows:
       - analysis_server:
           requires:
             - grpc_protocol
+          post-steps:
+            - upload-resource-usage-plot
       - invoice_server:
           requires:
             - grpc_protocol
