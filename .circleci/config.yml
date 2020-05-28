@@ -34,6 +34,7 @@ jobs:
     executor: rust-grpc-protoc
     steps:
       - checkout
+      - plot-resource-usage
       - run:
           name: Get Git
           command: apt update && apt install git -yy
@@ -93,6 +94,14 @@ commands:
           name: Calculate Cache Key Vars
           command: rustc --version >rust-version
 
+  plot-resource-usage:
+    description: "Start plotting the resource usage of Docker executor."
+    steps:
+      - run:
+          name: Start collecting resource usage samples
+          command: while true; do .circleci/container_resource_usage.sh; done >> usage.dat
+          background: true
+  
   build-service:
     description: "Boilerplate Rust service build config"
     parameters:
