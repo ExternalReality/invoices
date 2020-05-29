@@ -14,6 +14,7 @@ blocks:
         - name: make lint
           commands:
             - echo "lint your code"
+    dependencies: []
   - name: Unit tests
     task:
       prologue:
@@ -29,3 +30,21 @@ blocks:
         - name: Unit tests 3/3
           commands:
             - echo "run 3/4"
+    dependencies:
+      - Lint
+  - name: 'Block #3'
+    dependencies:
+      - 'Block #4'
+      - Unit tests
+    task:
+      jobs:
+        - name: 'Job #1'
+          commands:
+            - 'echo $[1 + 2]'
+  - name: 'Block #4'
+    dependencies: []
+    task:
+      jobs:
+        - name: 'Job #1'
+          commands:
+            - echo "block 4"
