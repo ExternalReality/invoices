@@ -34,6 +34,7 @@ jobs:
     executor: rust-grpc-protoc
     steps:
       - checkout
+      - plot-resource-usage
       - run:
           name: Get Git
           command: apt update && apt install git -yy
@@ -75,8 +76,6 @@ workflows:
       - analysis_server:
           requires:
             - grpc_protocol
-          pre-steps:
-            - plot-resource-usage
           post-steps:
             - upload-resource-usage-plot
       - invoice_server:
