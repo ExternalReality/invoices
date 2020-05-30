@@ -7,7 +7,7 @@
 infile=ARG1
 outfile=ARG2
 set term x11
-set title 'Memory, CPU usage from' . infile
+set title 'Continer Memory & CPU Usage'
 set xdata time
 set timefmt "%s"
 set xlabel "Time [[hh:]mm:ss]"
