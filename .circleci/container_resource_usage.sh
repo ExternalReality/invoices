@@ -5,7 +5,7 @@ set -e
 tstart=$(date +%s%N)
 cstart=$(cat /sys/fs/cgroup/cpuacct/cpuacct.usage)
 
-sleep 1 #sample interval
+sleep 3 #sample interval
 
 tstop=$(date +%s%N)
 cstop=$(cat /sys/fs/cgroup/cpuacct/cpuacct.usage)
