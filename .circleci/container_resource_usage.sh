@@ -10,7 +10,8 @@ sleep 1 #sample interval
 tstop=$(date +%s%N)
 cstop=$(cat /sys/fs/cgroup/cpuacct/cpuacct.usage)
 
-cpu=$[($cstop - $cstart) / ($tstop - $tstart) * 100]
+calc() { awk "BEGIN{print $*}"; }
+cpu=$(calc '($cstop - $cstart) / ($tstop - $tstart) * 100')
 mem=$(cat /sys/fs/cgroup/memory/memory.usage_in_bytes  | awk '{ byte =$1 /1024/1024; print byte "m" }')
 now=$(date +%s)
 
