@@ -7,14 +7,14 @@
 infile=ARG1
 outfile=ARG2
 set term x11
-set title 'Continer Memory & CPU Usage'
+set title 'Continer Memory \& CPU Usage'
 set xdata time
 set timefmt "%s"
 set xlabel "Time [[hh:]mm:ss]"
 set ylabel "Memory usage"
 set format y '%.1s%cB'
 set y2label 'CPU usage'
-set format y2 '%.0s%%'
+set format y2 '%.0f%%'
 set y2tics nomirror
 set tics out
 set autoscale y
