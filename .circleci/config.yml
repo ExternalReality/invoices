@@ -5,6 +5,7 @@ executors:
   rust-grpc-protoc:
     docker:
       - image: externalreality/invoices-build-image
+    resource_class: xlarge
 
 jobs:
   grpc_protocol:
@@ -31,7 +32,7 @@ jobs:
           key: &cargo-cache-key v6-cargo-cache-{{arch}}-{{checksum "rust-version"}}-{{checksum "Cargo.lock"}}
 
   analysis_server:
-    executor: rust-grpc-protoc
+    executor: rust-grpc-protoc	
     steps:
       - checkout
       - plot-resource-usage
