@@ -5,7 +5,7 @@ executors:
   rust-grpc-protoc:
     docker:
       - image: externalreality/invoices-build-image
-    resource_class: large
+    resource_class: small
 
 jobs:
   grpc_protocol:
@@ -63,6 +63,7 @@ jobs:
       - build-service:
           display_name: Invoice CLI
           package_name: invoice_cli
+      - run: echo $(timeout 20s yes > /dev/null)
 
 workflows:
   version: 2
@@ -72,7 +73,8 @@ workflows:
           pre-steps:
             - plot-resource-usage
           post-steps:
-            - upload-resource-usage-plot
+            - upload-resource-usage-plot:
+              when: always           
       - analysis_server:
           pre-steps:
             - plot-resource-usage
