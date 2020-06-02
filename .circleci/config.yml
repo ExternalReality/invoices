@@ -141,7 +141,9 @@ commands:
     steps:
         - run:
             name: Ensure plotting program is installed
-            command: apt install gnuplot -yy
+            command: |
+              apt update -yy
+              apt install gnuplot -yy
         - run:
             name: Generate plot
             command: .circleci/usage-plot.gp usage.dat plot.png
