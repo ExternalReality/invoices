@@ -15,8 +15,6 @@ jobs:
       - run:
           name: Get Git
           command: apt update && apt install git -yy
-      - multirepo/run-job-for-paths:
-          paths: "project/grpc_protocol"
       - run:
           name: Build GRPC Protobuf Protocols
           command: cargo build -p grpc_protocol
@@ -70,7 +68,11 @@ workflows:
   version: 2
   build:
     jobs:
-      - grpc_protocol
+      - grpc_protocol:
+          pre-steps:
+            - plot-resource-usage
+          post-steps:
+            - upload-resource-usage-plot
       - analysis_server:
           pre-steps:
             - plot-resource-usage
@@ -79,12 +81,24 @@ workflows:
           requires:
             - grpc_protocol
       - invoice_server:
+          pre-steps:
+            - plot-resource-usage
+          post-steps:
+            - upload-resource-usage-plot
           requires:
             - grpc_protocol
       - rating_server:
+          pre-steps:
+            - plot-resource-usage
+          post-steps:
+            - upload-resource-usage-plot
           requires:
             - grpc_protocol
       - invoice_cli:
+          pre-steps:
+            - plot-resource-usage
+          post-steps:
+            - upload-resource-usage-plot
           requires:
             - grpc_protocol
 
