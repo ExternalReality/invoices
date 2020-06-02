@@ -111,9 +111,9 @@ commands:
                tstop=$(date +%s%N)
                cstop=$(cat /sys/fs/cgroup/cpuacct/cpuacct.usage) #nanoseoncs of cpu usage at tstop
 
-               calc() { awk "BEGIN{printf \"%.2f\", $*}"; }
+               calc() { awk "BEGIN{print $*}"; }
                cpu=$(calc "($cstop - $cstart) / ($tstop - $tstart) * 100")
-               mem=$(cat /sys/fs/cgroup/memory/memory.usage_in_bytes  | awk '{ byte =$1 /1024/1024; print byte "m" }')
+               mem=$(cat /sys/fs/cgroup/memory/memory.usage_in_bytes  | awk '{ byte=$1 /1024/1024; print byte "m" }')
                now=$(date +%s)
 
                echo $now $mem $cpu
