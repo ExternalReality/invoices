@@ -5,7 +5,7 @@ executors:
   rust-grpc-protoc:
     docker:
       - image: externalreality/invoices-build-image
-    resource_class: xlarge
+    resource_class: large
 
 jobs:
   grpc_protocol:
@@ -32,7 +32,7 @@ jobs:
           key: &cargo-cache-key v6-cargo-cache-{{arch}}-{{checksum "rust-version"}}-{{checksum "Cargo.lock"}}
 
   analysis_server:
-    executor: rust-grpc-protoc	
+    executor: rust-grpc-protoc
     steps:
       - checkout
       - plot-resource-usage
@@ -101,7 +101,23 @@ commands:
     steps:
       - run:
           name: Start collecting resource usage samples
-          command: while true; do .circleci/container_resource_usage.sh; done >> usage.dat
+          command: |
+             while true; do
+               tstart=$(date +%s%N)                               #nanoseconds since unix epoch timestamp
+               cstart=$(cat /sys/fs/cgroup/cpuacct/cpuacct.usage) #nanoseconds of cpu usage at tstart
+
+               sleep 3 #sample interval
+
+               tstop=$(date +%s%N)
+               cstop=$(cat /sys/fs/cgroup/cpuacct/cpuacct.usage) #nanoseoncs of cpu usage at tstop
+
+               calc() { awk "BEGIN{printf \"%.2f\", $*}"; }
+               cpu=$(calc "($cstop - $cstart) / ($tstop - $tstart) * 100")
+               mem=$(cat /sys/fs/cgroup/memory/memory.usage_in_bytes  | awk '{ byte =$1 /1024/1024; print byte "m" }')
+               now=$(date +%s)
+
+               echo $now $mem $cpu
+             done >> usage.dat
           background: true
 
   upload-resource-usage-plot:
