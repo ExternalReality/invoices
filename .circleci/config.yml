@@ -5,7 +5,7 @@ executors:
   rust-grpc-protoc:
     docker:
       - image: externalreality/invoices-build-image
-    resource_class: small
+    resource_class: medium
 
 jobs:
   grpc_protocol:
