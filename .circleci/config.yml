@@ -1,6 +1,47 @@
 version: 2.1
 orbs:
    multirepo: dnephin/multirepo@0.0.7
+   container-metrics:
+      commands:
+        plot-resource-usage:
+           description: "Start plotting the resource usage of Docker executor."
+           steps:
+             - run:
+                name: Start collecting resource usage samples
+                command: |
+                   ncpus=$(nproc)
+                   while true; do
+                      tstart=$(date +%s%N)                               #nanoseconds since unix epoch timestamp
+                      cstart=$(cat /sys/fs/cgroup/cpuacct/cpuacct.usage) #nanoseconds of cpu usage at tstart
+
+                      sleep 5 #sample interval
+
+                      tstop=$(date +%s%N)
+                      cstop=$(cat /sys/fs/cgroup/cpuacct/cpuacct.usage) #nanoseoncs of cpu usage at tstop
+
+                      calc() { awk "BEGIN{printf \"%.2f\", $*}"; }
+                      cpu=$(calc "($cstop - $cstart) / (($tstop - $tstart) * $ncpus) * 100")
+                      mem=$(cat /sys/fs/cgroup/memory/memory.usage_in_bytes  | awk '{ byte=$1 /1024/1024; print byte "m" }')
+                      now=$(date +%s)
+
+                      echo $now $mem $cpu
+                   done >> usage.dat
+                background: true
+
+        upload-resource-usage-plot:
+          description: "upload a plot of the resource usage collected with the plot-resource usage command."
+          steps:
+            - run:
+               name: Ensure plotting program is installed
+               command: |
+                 apt update -yy
+                 apt install gnuplot -yy
+            - run:
+               name: Generate plot
+               command: .circleci/usage-plot.gp usage.dat plot.png
+            - store_artifacts:
+               path: plot.png
+
 executors:
   rust-grpc-protoc:
     docker:
@@ -71,36 +112,36 @@ workflows:
     jobs:
       - grpc_protocol:
           pre-steps:
-            - plot-resource-usage
+            - container-metrics/plot-resource-usage
           post-steps:
-            - upload-resource-usage-plot:
-              when: always           
+            - container-metrics/upload-resource-usage-plot:
+              when: always
       - analysis_server:
           pre-steps:
-            - plot-resource-usage
+            - container-metrics/plot-resource-usage
           post-steps:
-            - upload-resource-usage-plot
+            - container-metrics/upload-resource-usage-plot
           requires:
             - grpc_protocol
       - invoice_server:
           pre-steps:
-            - plot-resource-usage
+            - container-metrics/plot-resource-usage
           post-steps:
-            - upload-resource-usage-plot
+            - container-metrics/upload-resource-usage-plot
           requires:
             - grpc_protocol
       - rating_server:
           pre-steps:
-            - plot-resource-usage
+            - container-metrics/plot-resource-usage
           post-steps:
-            - upload-resource-usage-plot
+            - container-metrics/upload-resource-usage-plot
           requires:
             - grpc_protocol
       - invoice_cli:
           pre-steps:
-            - plot-resource-usage
+            - container-metrics/plot-resource-usage
           post-steps:
-            - upload-resource-usage-plot
+            - container-metrics/upload-resource-usage-plot
           requires:
             - grpc_protocol
 
@@ -111,45 +152,6 @@ commands:
       - run:
           name: Calculate Cache Key Vars
           command: rustc --version >rust-version
-
-  plot-resource-usage:
-    description: "Start plotting the resource usage of Docker executor."
-    steps:
-      - run:
-          name: Start collecting resource usage samples
-          command: |
-             ncpus=$(nproc)
-             while true; do
-               tstart=$(date +%s%N)                               #nanoseconds since unix epoch timestamp
-               cstart=$(cat /sys/fs/cgroup/cpuacct/cpuacct.usage) #nanoseconds of cpu usage at tstart
-
-               sleep 5 #sample interval
-
-               tstop=$(date +%s%N)
-               cstop=$(cat /sys/fs/cgroup/cpuacct/cpuacct.usage) #nanoseoncs of cpu usage at tstop
-
-               calc() { awk "BEGIN{printf \"%.2f\", $*}"; }
-               cpu=$(calc "($cstop - $cstart) / (($tstop - $tstart) * $ncpus) * 100")
-               mem=$(cat /sys/fs/cgroup/memory/memory.usage_in_bytes  | awk '{ byte=$1 /1024/1024; print byte "m" }')
-               now=$(date +%s)
-
-               echo $now $mem $cpu
-             done >> usage.dat
-          background: true
-
-  upload-resource-usage-plot:
-    description: "upload a plot of the resource usage collected with the plot-resource usage command."
-    steps:
-        - run:
-            name: Ensure plotting program is installed
-            command: |
-              apt update -yy
-              apt install gnuplot -yy
-        - run:
-            name: Generate plot
-            command: .circleci/usage-plot.gp usage.dat plot.png
-        - store_artifacts:
-            path: plot.png
 
   build-service:
     description: "Boilerplate Rust service build config"
