@@ -39,7 +39,7 @@ orbs:
             - run:
                name: Generate plot
                command: |
-                  title="${CIRCLE_BUILD_NUM}-${CIRLCE_JOB}-${CIRCLE_NODE_INDEX}//${CIRCLE_NODE_TOTAL}
+                  title=${CIRCLE_JOB}
                   gnuplot -c /dev/stdin usage.dat plot.png $title \<<EOF
                   reset
                   set terminal png enhanced size 800,600 background rgb "#151515"
@@ -63,7 +63,7 @@ orbs:
                   set ytics nomirror
                   set y2tics nomirror
                   set key textcolor rgb "#ffffff" bottom right
-                  set title textcolor rgb "#ffffff"
+                  set title textcolor rgb "#ffffff" noenhanced
                   set xlabel "Time" textcolor rgb "#ffffff" font ',15'
                   set ylabel "Memory Usage" textcolor rgb "#ffffff" font ',15'
                   set format y '%.1s%cB'
