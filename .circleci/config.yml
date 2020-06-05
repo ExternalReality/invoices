@@ -1,10 +1,13 @@
 version: 2.1
 orbs:
    multirepo: dnephin/multirepo@0.0.7
+   container-metrics: externalreality/container-metrics@0.0.1
+
 executors:
   rust-grpc-protoc:
     docker:
       - image: externalreality/invoices-build-image
+    resource_class: medium
 
 jobs:
   grpc_protocol:
@@ -14,8 +17,6 @@ jobs:
       - run:
           name: Get Git
           command: apt update && apt install git -yy
-      - multirepo/run-job-for-paths:
-          paths: "project/grpc_protocol"
       - run:
           name: Build GRPC Protobuf Protocols
           command: cargo build -p grpc_protocol
@@ -37,8 +38,6 @@ jobs:
       - run:
           name: Get Git
           command: apt update && apt install git -yy
-      - multirepo/run-job-for-paths:
-          paths: project/grpc_protocol project/analysis_server
       - build-service:
           display_name: Analysis Server
           package_name: analysis_server
@@ -66,22 +65,44 @@ jobs:
       - build-service:
           display_name: Invoice CLI
           package_name: invoice_cli
+      - run: echo $(timeout 20s yes > /dev/null)
 
 workflows:
   version: 2
   build:
     jobs:
-      - grpc_protocol
+      - grpc_protocol:
+          pre-steps:
+            - container-metrics/plot-resource-usage
+          post-steps:
+            - container-metrics/upload-resource-usage-plot:
+              when: always
       - analysis_server:
+          pre-steps:
+            - container-metrics/plot-resource-usage
+          post-steps:
+            - container-metrics/upload-resource-usage-plot
           requires:
             - grpc_protocol
       - invoice_server:
+          pre-steps:
+            - container-metrics/plot-resource-usage
+          post-steps:
+            - container-metrics/upload-resource-usage-plot
           requires:
             - grpc_protocol
       - rating_server:
+          pre-steps:
+            - container-metrics/plot-resource-usage
+          post-steps:
+            - container-metrics/upload-resource-usage-plot
           requires:
             - grpc_protocol
       - invoice_cli:
+          pre-steps:
+            - container-metrics/plot-resource-usage
+          post-steps:
+            - container-metrics/upload-resource-usage-plot
           requires:
             - grpc_protocol
 
