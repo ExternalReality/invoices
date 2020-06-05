@@ -39,7 +39,8 @@ orbs:
             - run:
                name: Generate plot
                command: |
-                  gnuplot -c /dev/stdin usage.dat plot.png \<<EOF
+                  title="${CIRCLE_BUILD_NUM}-${CIRLCE_JOB}-${CIRCLE_NODE_INDEX}//${CIRCLE_NODE_TOTAL}
+                  gnuplot -c /dev/stdin usage.dat plot.png $title \<<EOF
                   reset
                   set terminal png enhanced size 800,600 background rgb "#151515"
                   set output 'plot.png'
@@ -48,6 +49,7 @@ orbs:
 
                   infile=ARG1
                   outfile=ARG2
+                  plotname=ARG3
 
                   set style line 1 lc rgb "#00ffff"
                   set style line 2 lc rgb "#ff00ff"
@@ -67,7 +69,7 @@ orbs:
                   set format y '%.1s%cB'
                   set y2label "CPU Usage" textcolor rgb "#ffffff" font ',15'
                   set format y2 '%.0f%%'
-                  set title "Memory CPU Usage" font ',20'
+                  set title plotname font ',20'
                   set autoscale y
                   set autoscale y2
                   set xtics rotate 60
